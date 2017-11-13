@@ -66,7 +66,7 @@ if('error' != BypassCloudFlare($url)){
     $curl->opt [CURLOPT_SSL_VERIFYPEER] = FALSE;
     $curl->opt [CURLOPT_SSL_VERIFYHOST] = FALSE;
     $curl->cbTask = array('work');
-    $curl->maxThread = 6;//线程数
+    $curl->maxThread = 10;//线程数
     $curl->maxTry = 2;//失败重试
     $curl->start();
     $etime = microtime(true);
