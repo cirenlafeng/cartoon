@@ -24,6 +24,7 @@ $new_urlInfo = [];
 foreach($urlInfo['www.manga.ae'] as $urlData)
 {
     $html = BypassCloudFlare($urlData['url']);
+    printf($html);die();
     phpQuery::newDocumentHTML($html);
     $articles = pq('ul.new-manga-chapters > li');
     $sqlData = array();
