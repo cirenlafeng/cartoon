@@ -28,7 +28,7 @@ foreach ($urlInfo['www.manga.ae'] as $key => $cartoon) {
 			echo "#ERROR : BookId:{$v['check']} 章节数据不完整或已导入：".$v['tag'].' 已跳过'.PHP_EOL;
 			continue;
 		}else{
-			$url = "http://apitest.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s";
+			$url = "http://admin.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s";
 			$post_data['data'] 		= json_encode($tagList);
 			$post_data['bookId'] 	= $cartoon['check'];
 			$post_data['key']		= 'd5aafc3f489da27f4582d7a2ad76764069247_99999A';
