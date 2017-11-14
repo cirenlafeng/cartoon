@@ -85,8 +85,8 @@ function work()
 
     $countSql = '';
     $sql = '';
-	$countSql = "SELECT count(1) as count FROM `articles` WHERE `status` = 0 and `title` != '400' ";
-	$sql = "SELECT * FROM `articles` WHERE `status` = 0 and `title` != '400' ";
+	$countSql = "SELECT count(1) as count FROM `articles` WHERE `status` = 0 and `title` = '' ";
+	$sql = "SELECT * FROM `articles` WHERE `status` = 0 and `title` = '' ";
 	$row = $dbo->loadObject($countSql);
 	$count =$row->count;
 	echo "#SQL :: {$sql}".PHP_EOL;
