@@ -33,9 +33,19 @@ foreach($urlInfo['www.manga.ae'] as $urlData)
         $url = substr($url,0,strlen($str)-2).'0/full';
         $keyword = pq($article)->find('a.chapter')->text();
         $keyword = substr(strrchr($keyword, ':'),1);
+        $chapter = findNum(substr(pq($article)->find('a.chapter')->text(),0,5));
         if(empty($keyword))
         {
             $keyword = '-';
+        }
+        if($chapter)
+        {
+            $exist = $dbo->loadObject("SELECT 1 FROM `articles` WHERE `check` = '{$urlData['check']}' AND `status`=8 AND `tag`= '{$chapter}' LIMIT 1");
+            if ($exist) 
+            {
+                echo "#跳过 : 书籍= {$urlData['check']} , 章节= {$chapter} 已提交系统 ..." . PHP_EOL;
+                continue;
+            }
         }
         if (strlen($url) > 10)
         {
@@ -223,6 +233,16 @@ print_format($statisticsInfo,'$statisticsInfo');
 
 
 
-
+function findNum($str=''){
+    $str=trim($str);
+    if(empty($str)){return '';}
+    $result='';
+    for($i=0;$i<strlen($str);$i++){
+        if(is_numeric($str[$i])){
+            $result.=$str[$i];
+        }
+    }
+    return $result;
+}
 
 
