@@ -37,4 +37,13 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62694 كونان _ Detective Conan
+  [
+      'url' => 'https://www.manga.ae/meitantei-conan/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62694',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];
