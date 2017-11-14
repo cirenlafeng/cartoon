@@ -19,4 +19,22 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62808 猎人 
+  [
+      'url' => 'https://www.manga.ae/hunter-x-hunter/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62808',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62807 死亡笔记 
+  [
+      'url' => 'https://www.manga.ae/death-note/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62807',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];
