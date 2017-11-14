@@ -15,14 +15,14 @@ include_once(dirname(__FILE__).'/../conf/incloudeURL.php');
 
 echo "<pre>".date('Y-m-d H:i:s').'<br/>'.PHP_EOL;
 $stime = microtime(true);
-print_r($urlInfo['www.manga.ae']);die();
+// print_r($urlInfo['www.manga.ae']);die();
 foreach ($urlInfo['www.manga.ae'] as $key => $cartoon) {
 	// $sql = "SELECT * FROM `articles` WHERE `check` = '{$cartoon['check']}' AND `status` = 2 ORDER BY tag ASC , type ASC";
-	$sql = "SELECT  count(1) AS `count`,`tag`,`check`,`keywords` FROM `articles` WHERE `check` = '{$cartoon['check']}' GROUP BY tag ORDER BY tag ";
+	$sql = "SELECT  count(1) AS `count`,`tag`,`check`,`keywords` FROM `articles` WHERE `check` = '{$cartoon['check']}' GROUP BY `tag` ORDER BY `tag` ";
 	$cartoonList = $dbo->loadAssocList($sql);
 	// print_r($cartoonList);die();
 	foreach ($cartoonList as $k => $v) {
-		$tagSql = "SELECT * FROM `articles` WHERE `check` = '{$cartoon['check']}' AND `status` = 2 AND `tag` = '{$v['tag']}' ORDER BY type ASC";
+		$tagSql = "SELECT * FROM `articles` WHERE `check` = '{$cartoon['check']}' AND `status` = 2 AND `tag` = '{$v['tag']}' ORDER BY `type` ASC";
 		$tagList = $dbo->loadAssocList($tagSql);
 		if(count($tagList) != $v['count'])
 		{
