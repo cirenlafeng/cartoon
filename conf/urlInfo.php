@@ -64,4 +64,22 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62819 晨曦公主
+  [
+      'url' => 'https://www.manga.ae/akatsuki-no-yona/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62819',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62818 妖精的尾巴
+  [
+      'url' => 'https://www.manga.ae/fairy-tail/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62818',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];
