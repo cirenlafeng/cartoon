@@ -46,4 +46,22 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62815 银魂
+  [
+      'url' => 'https://www.manga.ae/gintama/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62815',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62816 进击的巨人
+  [
+      'url' => 'https://www.manga.ae/shingeki-no-kyojin/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62816',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];

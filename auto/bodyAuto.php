@@ -82,11 +82,11 @@ function work()
 	global $urlInfo;
 	global $dbo;
 	global $control;
-
+    $dateTime3 = date('Y-m-d H:i:s',(time() - (86400*3)));
     $countSql = '';
     $sql = '';
-	$countSql = "SELECT count(1) as count FROM `articles` WHERE `status` = 0 and `title` = '' ";
-	$sql = "SELECT * FROM `articles` WHERE `status` = 0 and `title` = '' ";
+    $countSql = "SELECT count(1) as count FROM `articles` WHERE `status` = 0 and `title` = '' and `dateTime` >= '{$dateTime3}' ";
+	$sql = "SELECT * FROM `articles` WHERE `status` = 0 and `title` = '' and `dateTime` >= '{$dateTime3}' ";
 	$row = $dbo->loadObject($countSql);
 	$count =$row->count;
 	echo "#SQL :: {$sql}".PHP_EOL;
