@@ -82,4 +82,40 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62821 One punch Man
+  [
+      'url' => 'https://www.manga.ae/one-punch-man/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62821',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62822 Skip Beat
+  [
+      'url' => 'https://www.manga.ae/skip-beat/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62822',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62823 Nanatsu no taizai
+  [
+      'url' => 'https://www.manga.ae/nanatsu-no-taizai/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62823',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62824 Noblesse
+  [
+      'url' => 'https://www.manga.ae/noblesse/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62824',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];
