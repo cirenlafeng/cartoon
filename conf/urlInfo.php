@@ -118,4 +118,22 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62829 kaichou wa maid sama
+  [
+      'url' => 'https://www.manga.ae/kaichou-wa-maid-sama/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62829',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62830 kingdom
+  [
+      'url' => 'https://www.manga.ae/kingdom/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62830',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];
