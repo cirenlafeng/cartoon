@@ -136,4 +136,40 @@ $urlInfo['www.manga.ae'] = [
       'weight' => '1',
       'isDone' => '1',
   ],
+  //62833 Tsubaki chou Lonely Planet
+  [
+      'url' => 'https://www.manga.ae/tsubaki-chou-lonely-planet/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62833',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62834 Ao Haru Ride
+  [
+      'url' => 'https://www.manga.ae/ao-haru-ride/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62834',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62835 namaikizakari.
+  [
+      'url' => 'https://www.manga.ae/namaikizakari/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62835',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
+  //62836 Tales of Demons and Gods
+  [
+      'url' => 'https://www.manga.ae/tales-of-demons-and-gods/',
+      'tag' => '0',
+      'type' => '0',
+      'check' => '62836',//书籍ID
+      'weight' => '1',
+      'isDone' => '1',
+  ],
 ];
