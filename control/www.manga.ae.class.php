@@ -54,14 +54,9 @@ class www_manga_ae
 		//基础数据
 	    $domain = $args['domain'];
 		$sqlBaseData = array(
-						'tag'=>$args['tag'],
-						'type'=>$args['type'],
-                        'check' => $args['check'],
-						'domain'=>$domain,
-						'url'=>'',
+						'list_id' => $args['list_id'],
 						'thumbnail'=>'',
-						'operatorID'=>$args['operatorID'],
-						'keywords'=>$args['keywords'],
+						'chapter_name'=>$args['chapter_name'],
 			);
 
 		//处理内容页面：自己选择处理html和xml方法  newDocumentHTML  newDocumentXML[xml很多没有缩略图]
@@ -77,16 +72,18 @@ class www_manga_ae
 			return false;
 		}else{
 			global $dbo;
-			$exist = $dbo->loadObject("SELECT 1 FROM `articles` WHERE `check` = '{$args['check']}' AND `tag`= '{$chapter}' LIMIT 1");
+			$exist = $dbo->loadObject("SELECT 1 FROM `comics_chapters` WHERE `list_id` = '{$args['list_id']}' AND `chapter`= '{$chapter}' LIMIT 1");
 			if ($exist) {
-		        echo "#continue : articlesDB.saveUrl-->>BookId= {$args['check']} , Chapter= {$chapter} is existed ....<br/>" . PHP_EOL;
+		        echo "#continue : articlesDB.saveUrl-->>BookId= {$args['list_id']} , Chapter= {$chapter} is existed ....<br/>" . PHP_EOL;
 		        @$statisticsInfo['saveUrl']['#Warning']++;
 		        return false;
 		    }
 		}
-		$sqlBaseData['tag'] = $chapter; //章节;
-		$pageCount = pq('div#morepages > a:last')->text();//总页数
-
+		$sqlBaseData['chapter'] = $chapter; //章节;
+		$pageFirst = pq('div#morepages > a:first')->text();//第一页
+		$pageEnd = pq('div#morepages > a:last')->text();//末页
+		$pageCount = $pageEnd - $pageFirst + 1;
+		// echo $pageCount;exit();
 		//选择队列区块
 		$articles = pq('#showchaptercontainer');
 		// print_format($articles);
@@ -100,8 +97,8 @@ class www_manga_ae
 			$url = pq($article)->find('img')->attr('src');
 			if (strlen($url) > 10)
 			{
-				$temp['type'] = pq($article)->find('span')->text();
-				if(empty($temp['type']))
+				$temp['page'] = pq($article)->find('span')->text();
+				if(empty($temp['page']))
 				{
 					continue;
 				}
@@ -118,13 +115,13 @@ class www_manga_ae
 				{
 					continue;
 				}
-				$temp['url'] = $temp['thumbnail'] = $url;
+				$temp['thumbnail'] = $url;
 				$sqlData[] = $temp;
 			}
 		}
 
 		phpQuery::unloadDocuments();
-
+		print_r($sqlData);exit();
 		//print_format($sqlData,'$sqlData');return;
 		//保存url信息
 		if (count($sqlData) != $pageCount) {
@@ -143,15 +140,8 @@ class www_manga_ae
 	{
 		$returnData = array('code'=>0,'msg'=>'success!');
 		//验证页面信息状态
-		$status = $args['status'];
 		$args['html'] = $result['content'];
-		//验证保存html数据是否损坏
-		if (strlen($args['html']) > 0 && checkStringIsBase64($args['html'])) {
-			echo "#ERROR : base64 .........{$args['urlID']}..........{$args['domain']}.........".PHP_EOL;
-			//改回状态重新获取
-			updateArticleStatus($args['urlID'], 0);
-			return false;
-		}
+		$status = $args['status'];
 		switch ($status)
 		{
 			#仅有目标url
@@ -176,31 +166,29 @@ class www_manga_ae
 	//处理具体正文内容title，time，content解析的方法html(),htmlOuter(),text()
 	public function ResolveHtml($data)
 	{
-		if(!empty($data['content']) && !empty($data['title']))
+		if(!empty($data['pic']))
 		{
-			echo "#continue : articlesDB.saveBody-->>BookId= {$data['check']} , Page : {$data['type']} is existed ....<br/>" . PHP_EOL;
+			echo "#continue : articlesDB.saveBody-->>BookId= {$data['list_id']} , Page : {$data['page']} is existed ....<br/>" . PHP_EOL;
 			return false;
 		}
 		$html = $data['html'];
 		$postData = [
-	        'appName'=>'sada',
-	        'type'=>'file',
-	        'w'=>550,
-	        'h'=>900,
-	        'fileContent'=>base64_encode($html),
-	        'fileName'=>md5($data['check']).'_'.$data['tag'].'_'.$data['type'].'_'.substr(strrchr($data['url'], '/'),1),
+    'appName'=>'sada',
+    'type'=>'file',
+    'w'=>610,
+    'h'=>1000,
+    'fileContent'=>base64_encode($html),
+    'fileName'=>md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
 	    //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
 	    if (!empty($temp['content'])) {
-	        $data['title'] = $temp['content'];
+	        $data['pic'] = $temp['content'];
 		    $data['time'] = time();
-		    $data['content'] = $temp['content'];
 		    unset($data['html']);
-		    $data['html'] = '';
 			return $data;
 	    }else{
-	        echo "#Error : get cdn error  --->  BookId : {$data['check']} Tag : {$data['tag']} Page : {$data['type']}".PHP_EOL;
+	        echo "#Error : get cdn error  --->  BookId : {$data['list_id']} Tag : {$data['chapter']} Page : {$data['page']}".PHP_EOL;
 	        return false;
 	    }
 	    

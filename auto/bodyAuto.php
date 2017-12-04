@@ -82,11 +82,11 @@ function work()
 	global $urlInfo;
 	global $dbo;
 	global $control;
-    $dateTime3 = date('Y-m-d H:i:s',(time() - (86400*3)));
+    $dateTime3 = time() - (86400*3);
     $countSql = '';
     $sql = '';
-    $countSql = "SELECT count(1) as count FROM `articles` WHERE `status` = 0 and `title` = '' and `dateTime` >= '{$dateTime3}' LIMIT 8000";
-	$sql = "SELECT * FROM `articles` WHERE `status` = 0 and `title` = '' and `dateTime` >= '{$dateTime3}' LIMIT 8000 ";
+    $countSql = "SELECT count(1) as count FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000";
+	$sql = "SELECT * FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000 ";
 	$row = $dbo->loadObject($countSql);
 	$count =$row->count;
 	echo "#SQL :: {$sql}".PHP_EOL;
@@ -104,16 +104,13 @@ function work()
 			#没采集的Html
 			case 0:
 				{
-					if (intval($article['title']) < 300)//采集被屏蔽
-					{
-						if (strlen($article['url']) > 5) {
-							$curl->add([
-							    'url' => $article['url'],
-							    'args' => $article,
-							], $callFunName);
-							$curl->cbTask = null;
+					if (strlen($article['thumbnail']) > 5) {
+						$curl->add([
+						    'url' => $article['thumbnail'],
+						    'args' => $article,
+						], $callFunName);
+						$curl->cbTask = null;
 //								echo '#URL : '.$article['url'].PHP_EOL;
-						}
 					}
 				}
 				break;

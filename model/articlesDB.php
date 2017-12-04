@@ -2,28 +2,22 @@
 defined('HOST_PATH') or exit("path error");
 
 $sqlBaseData = array(
-    'urlID'=>'',
-    'tag'=>0,
-    'type'=>0,
-    'status'=>0,
-    'domain'=>'',
-    'url'=>'',
+    'list_id'=>0,
+    'chapter_name'=>0,
+    'chapter'=>0,
+    'page'=>0,
+    'pic'=>'',
     'thumbnail'=>'',
-    'title'=>'',
-    'time'=>'',
-    'content'=>'',
-    'description'=>'',
-    'cate'=>0,
-    'html'=>'',
-    'operatorID'=>'',
-    'date'=>date('Y-m-d'),
+    'status'=>0,
+    'create_time'=>time(),
+    'update_time'=>0,
 );
 
 function saveUrl($sql=array())
 {
     global $statisticsInfo;
 
-    if (!isset($sql['url']) || strlen($sql['url']) < 10) {
+    if (!isset($sql['thumbnail']) || strlen($sql['thumbnail']) < 10) {
         echo "Error : articlesDB.saveUrl  -->>  saveUrlList sql[0] is NULL".PHP_EOL;return false;
     }
 
@@ -31,7 +25,6 @@ function saveUrl($sql=array())
 
     global $sqlBaseData;
     $sqlData = $sqlBaseData;
-    $sqlData['urlID'] = sha1($sql['url']);
 
     foreach ($sql as $key => $value) {
         $sqlData[$key] = $value;
@@ -39,22 +32,22 @@ function saveUrl($sql=array())
     extract($sqlData);//$sqlData to 变量
 
     global $dbo;
-    $exist = $dbo->loadObject("SELECT 1 FROM `articles` WHERE `urlID` = '{$urlID}' LIMIT 1");
+    $exist = $dbo->loadObject("SELECT 1 FROM `comics_chapters` WHERE `list_id` = '{$list_id}' AND `chapter` = '{$chapter}' AND `page` = '{$page}' LIMIT 1");
     if ($exist) {
-        echo "#Warning : articlesDB.saveUrl  -->>  urlID = {$urlID} , domain = {$domain} , Tag = {$tag} is existed ....<br/>" . PHP_EOL;
+        echo "#Warning : articlesDB.saveUrl  -->>  list_id = {$list_id} , chapter = {$chapter} , page = {$page} is existed ....<br/>" . PHP_EOL;
         @$statisticsInfo['saveUrl']['#Warning']++;
         return false;
     }
 
-    $sql = "INSERT INTO `articles` (`urlID`, `tag`, `type`, `status`, `check`, `domain`, `url`, `thumbnail`, `title`, `time`, `content`, `description`, `cate`, `html`, `operatorID`, `date` , `keywords`) VALUES ('{$urlID}', '{$tag}', '{$type}', '{$status}', '{$check}', '{$domain}', '{$url}', '{$thumbnail}', '{$title}', '{$time}', '{$content}', '{$description}', {$cate}, '{$html}', 0,'{$date}','{$keywords}')";
+    $sql = "INSERT INTO `comics_chapters` (`list_id`, `chapter_name`, `chapter`, `status`, `page`,  `thumbnail`,`create_time` ) VALUES ('{$list_id}', '{$chapter_name}', '{$chapter}', '{$status}', '{$page}', '{$thumbnail}', '{$create_time}')";
 
     try {
         $dbo->exec($sql);
-        echo "#Success : articlesDB.saveUrl  -->>  Tag = {$tag} , domain = {$domain} , urlID = {$urlID} ....<br/>" . PHP_EOL;
+        echo "#Success : articlesDB.saveUrl  -->>  list_id = {$list_id} , chapter = {$chapter} , page = {$page} ....<br/>" . PHP_EOL;
         @$statisticsInfo['saveUrl']['#Success']++;
         return true;
     } catch (Exception $e) {
-        echo "#Error : articlesDB.saveUrl  -->>  Tag = {$tag} , domain = {$domain} , urlID = {$urlID} ....<br/>" . PHP_EOL;
+        echo "#Error : articlesDB.saveUrl  -->>  list_id = {$list_id} , chapter = {$chapter} , page = {$page} ....<br/>" . PHP_EOL;
         @$statisticsInfo['saveUrl']['#Error'][] = $domain.' '.$urlID;
         echo "---->>> #{$sql} <br/>" . PHP_EOL;
         return false;
@@ -134,33 +127,17 @@ function saveBody($sqlData='', $statuss = 2)
     }
     extract($sqlData);
     // 过滤空格
-    $title = trim($title);
     $time = trim($time);
-    $content = trim($content);
     // base64_encode[转义] base64_decode[反转义]
     $content = base64_encode($content);
 
-    if (strlen($title) < 1) {
-        echo "#Error : articlesDB.saveBody  -->>  urlID = {$urlID}  , domain = {$domain}   title is null ..<br/>".PHP_EOL;
+    if (strlen($pic) < 1) {
+        echo "#Error : articlesDB.saveBody  -->>ID = {$list_id} ,chapter = {$chapter} page = {$page}  pic is null ..<br/>".PHP_EOL;
         @$statisticsInfo['saveBody']['#Error']['noTitle'][] = $urlID.' -> '.$url;
         return false;
     }
-    if (strlen($time) < 1) {
-        echo "#Error : articlesDB.saveBody  -->>  urlID = {$urlID}  , domain = {$domain}   time is null ..<br/>".PHP_EOL;
-        @$statisticsInfo['saveBody']['#Error']['noTime'][] = $urlID.' -> '.$url;
-        return false;
-    }
-    if (strlen($content) < 1) {
-        echo "#Error : articlesDB.saveBody  -->>  urlID = {$content}  , domain = {$domain}   title is null ..<br/>".PHP_EOL;
-        @$statisticsInfo['saveBody']['#Error']['noContent'][] = $urlID.' -> '.$url;
-        return false;
-    }
-    if($statuss == 2)
-    {
-        $sql = "UPDATE `articles` SET `status` = 2, `title` = '{$title}', `time` = '{$time}', `content` = '{$content}', `html` = '', `check` = '{$check}', `keywords` = '{$keywords}' WHERE `urlID` = '{$urlID}'";
-    }else{
-        $sql = "UPDATE `articles` SET `status` = {$statuss}, `title` = '{$title}', `time` = '{$time}', `content` = '{$content}', `html` = '', `check` = '{$check}', `keywords` = '{$keywords}' WHERE `urlID` = '{$urlID}'";
-    }
+    $sql = "UPDATE `comics_chapters` SET `status` = 2, `update_time` = '{$time}', `pic` = '{$pic}' WHERE `id` = '{$id}'";
+   
     
     // print_format($sql,'sql');return;
     // update

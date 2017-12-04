@@ -278,10 +278,6 @@ function getBodyHttpCodeCheck($result='')
         echo "#Error : http_code [ {$result['info']['http_code']} ]  Html resource  -->>  URL = {$result['info']['url']}  ....." . PHP_EOL;
         return false;
     }
-    if (strlen($result['content']) < 1) {
-        echo "#Error NO HTML : html resource is null  URL [ {$result['info']['url']} ]  ....." . PHP_EOL;
-        return false;
-    }
     return true;
 }
 

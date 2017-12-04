@@ -20,6 +20,68 @@ if (isset($argv[1])) {
         echo "not find file === ".$filePath.PHP_EOL;die();
     }
 }
+
+//全站业务
+$urlInfo['www.manga.ae'] = [];
+$urlTemp = 'https://www.manga.ae/manga/page:';
+for ($i=1; $i <= 1; $i++) { 
+    $urlForTemp = $urlTemp.$i;
+    $html = BypassCloudFlare($urlForTemp);
+    phpQuery::newDocumentHTML($html);
+    $articles = pq('div.mangacontainer');
+    foreach ($articles as $article)
+    {
+        $name = pq($article)->find('a.manga:eq(1)')->text();
+        $url = pq($article)->find('a.manga:eq(1)')->attr('href');
+        $count = pq($article)->find('div.details:eq(1) > a')->text();
+        $year = pq($article)->find('div.year')->text();
+        $pic = pq($article)->find('img:eq(0)')->attr('src');
+
+        $count = empty($count) ? 0 : $count;
+        $year = empty($year) ? 0 : $year;
+        $pic = empty($pic) ? '' : $pic;
+
+        if(!empty($name) && !empty($url))
+        {
+            $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
+            //判断是否有该书数据
+            if($row)
+            {
+                //判断是否有更新
+                if($count > $row['chapters_count'])
+                {
+                    $re = $dbo->exec("UPDATE `comics_list` SET `chapters_count` = '{$count}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                    if($re)
+                    {
+                        echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
+                        $addArr = [];
+                        $addArr['url'] = $url;
+                        $addArr['list_id'] = $row['id'];
+                        $urlInfo['www.manga.ae'][] = $addArr;
+                    }
+                }
+
+            }else{
+
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`pic`,`chapters_count`,`year`,`url`) VALUES('-','{$name}','{$pic}','{$count}','{$year}','{$url}')");
+                $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                if($rel && !empty($list_id['id']))
+                {
+                    echo "##录入新的书籍：ID->".$list_id['id']." 名称：".$list_id['name'].PHP_EOL;
+                    $addArr = [];
+                    $addArr['url'] = $url;
+                    $addArr['list_id'] = $list_id['id'];
+                    $urlInfo['www.manga.ae'][] = $addArr;
+                }else{
+                    $dbo->exec("DELETE FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                }
+            }
+        }
+    }
+    phpQuery::unloadDocuments();
+}
+
+//单本列表业务
 $new_urlInfo = [];
 foreach($urlInfo['www.manga.ae'] as $urlData)
 {
@@ -40,10 +102,10 @@ foreach($urlInfo['www.manga.ae'] as $urlData)
         }
         if($chapter)
         {
-            $exist = $dbo->loadObject("SELECT 1 FROM `articles` WHERE `check` = '{$urlData['check']}' AND `status`=8 AND `tag`= '{$chapter}' LIMIT 1");
+            $exist = $dbo->loadObject("SELECT 1 FROM `comics_chapters` WHERE `list_id` = '{$urlData['list_id']}' AND `status`=8 AND `chapter`= '{$chapter}' LIMIT 1");
             if ($exist) 
             {
-                echo "#跳过 : 书籍= {$urlData['check']} , 章节= {$chapter} 已提交系统 ..." . PHP_EOL;
+                echo "#跳过 : 书籍ID= {$urlData['list_id']} , 章节= {$chapter} 已提交系统 ..." . PHP_EOL;
                 continue;
             }
         }
@@ -51,7 +113,7 @@ foreach($urlInfo['www.manga.ae'] as $urlData)
         {
             $new_urlData = $urlData;
             $new_urlData['url'] = $url;
-            $new_urlData['keywords'] = $keyword;
+            $new_urlData['chapter_name'] = $keyword;
             $new_urlInfo['www.manga.ae'][] = $new_urlData;
         }else{
             continue;
@@ -61,6 +123,7 @@ foreach($urlInfo['www.manga.ae'] as $urlData)
 }
 // print_r($new_urlInfo);die();
 $urlInfo = $new_urlInfo;
+// print_r($urlInfo);die();
 //载入所有业务
 foreach ($filesNames as $key => $fileName)
 {
@@ -238,7 +301,7 @@ function findNum($str=''){
     if(empty($str)){return '';}
     $result='';
     for($i=0;$i<strlen($str);$i++){
-        if(is_numeric($str[$i])){
+        if(is_numeric($str[$i]) || $str[$i] == '.'){
             $result.=$str[$i];
         }
     }
