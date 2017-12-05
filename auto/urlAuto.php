@@ -29,8 +29,21 @@ for ($i=1; $i <= 1; $i++) {
     $html = BypassCloudFlare($urlForTemp);
     phpQuery::newDocumentHTML($html);
     $articles = pq('div.mangacontainer');
-    foreach ($articles as $article)
+    foreach ($articles as $k=>$article)
     {
+        $tag = "";
+        //详情页地址获取,用于抓取标签
+        $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
+        //if($k == 2) echo pq($article);die;
+        $html1 = BypassCloudFlare($detail);
+        phpQuery::newDocumentHTML($html1);
+        $list = pq('.manga-details-extended ul li');
+        foreach ($list as $val)
+        {
+            $tmp = pq($val)->find('a:eq(0)')->text();
+            $tag .= ','.$tmp;
+        }
+        $tags = trim($tag,',');
         $name = pq($article)->find('a.manga:eq(1)')->text();
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
         $count = pq($article)->find('div.details:eq(1) > a')->text();
@@ -63,7 +76,7 @@ for ($i=1; $i <= 1; $i++) {
 
             }else{
 
-                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`pic`,`chapters_count`,`year`,`url`) VALUES('-','{$name}','{$pic}','{$count}','{$year}','{$url}')");
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`pic`,`chapters_count`,`year`,`url`) VALUES('{$tags}','{$name}','{$pic}','{$count}','{$year}','{$url}')");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
                 {

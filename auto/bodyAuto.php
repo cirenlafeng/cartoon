@@ -98,7 +98,7 @@ function work()
         $callFunName = getControlFunFirstName($article['domain']).'_Funtion';
         $article['fun'] = 'getBody';
         //特殊设置
-    	$curl = setCurlOPT($article['domain'], $curl);
+    	//$curl = setCurlOPT($article['domain'], $curl);
 		switch ($article['status'])
 		{
 			#没采集的Html

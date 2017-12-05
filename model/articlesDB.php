@@ -3,6 +3,7 @@ defined('HOST_PATH') or exit("path error");
 
 $sqlBaseData = array(
     'list_id'=>0,
+    'domain' =>0,
     'chapter_name'=>0,
     'chapter'=>0,
     'page'=>0,
@@ -10,7 +11,7 @@ $sqlBaseData = array(
     'thumbnail'=>'',
     'status'=>0,
     'create_time'=>time(),
-    'update_time'=>0,
+    'update_time'=>time(),
 );
 
 function saveUrl($sql=array())
@@ -39,7 +40,7 @@ function saveUrl($sql=array())
         return false;
     }
 
-    $sql = "INSERT INTO `comics_chapters` (`list_id`, `chapter_name`, `chapter`, `status`, `page`,  `thumbnail`,`create_time` ) VALUES ('{$list_id}', '{$chapter_name}', '{$chapter}', '{$status}', '{$page}', '{$thumbnail}', '{$create_time}')";
+    $sql = "INSERT INTO `comics_chapters` (`list_id`,`domain`, `chapter_name`, `chapter`, `status`, `page`,  `thumbnail`,`create_time`,`update_time` ) VALUES ('{$list_id}','{$domain}', '{$chapter_name}', '{$chapter}', '{$status}', '{$page}', '{$thumbnail}', '{$create_time}', '{$update_time}')";
 
     try {
         $dbo->exec($sql);

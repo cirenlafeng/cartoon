@@ -116,12 +116,14 @@ class www_manga_ae
 					continue;
 				}
 				$temp['thumbnail'] = $url;
+				$temp['domain'] = 'www.manga.ae';
+				
 				$sqlData[] = $temp;
 			}
 		}
 
 		phpQuery::unloadDocuments();
-		print_r($sqlData);exit();
+		//print_r($sqlData);exit();
 		//print_format($sqlData,'$sqlData');return;
 		//保存url信息
 		if (count($sqlData) != $pageCount) {
