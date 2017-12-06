@@ -33,9 +33,10 @@ function www_manga_ae_Funtion($result, $args)
 			//验证返回状态
 		    if (getBodyHttpCodeCheck($result)) {
 		    	$CLASS->getBodyInfo($result, $args);
-		    }else{
-		    	updateArticleHttpErrorCode($args['urlID'], $result['info']['http_code']);
 		    }
+		    // else{
+		    // 	updateArticleHttpErrorCode($args['urlID'], $result['info']['http_code']);
+		    // }
 			break;
 		default:
 			break;
@@ -82,6 +83,7 @@ class www_manga_ae
 		$sqlBaseData['chapter'] = $chapter; //章节;
 		$pageFirst = pq('div#morepages > a:first')->text();//第一页
 		$pageEnd = pq('div#morepages > a:last')->text();//末页
+
 		$pageCount = $pageEnd - $pageFirst + 1;
 		// echo $pageCount;exit();
 		//选择队列区块
@@ -117,6 +119,7 @@ class www_manga_ae
 				}
 				$temp['thumbnail'] = $url;
 				$temp['domain'] = 'www.manga.ae';
+				$temp['pagecount'] = $pageEnd;
 				
 				$sqlData[] = $temp;
 			}
@@ -182,11 +185,16 @@ class www_manga_ae
     'fileContent'=>base64_encode($html),
     'fileName'=>md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
+    	
 	    //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
 	    if (!empty($temp['content'])) {
 	        $data['pic'] = $temp['content'];
 		    $data['time'] = time();
+		    //获取图片宽高
+			$imginfo = getimagesize($temp['content']);
+		    $data['width'] = $imginfo[0];
+			$data['height'] = $imginfo[1];
 		    unset($data['html']);
 			return $data;
 	    }else{

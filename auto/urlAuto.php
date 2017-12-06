@@ -4,6 +4,18 @@ set_time_limit(3600);
 header("Content-Type:text/html;charset=utf-8");
 date_default_timezone_set('Asia/Shanghai');
 error_reporting(E_ALL ^ E_NOTICE);
+
+//禁止浏览器访问
+if (PHP_SAPI != 'cli') {
+    return phpinfo();
+}
+
+if($argv[1]){
+    $flag = (int) $argv[1];
+}else{
+    $flag = 1;
+}
+
 include_once(dirname(__FILE__).'/../conf/include.php');
 //提取所有业务文件
 $filesNames = scandir(HOST_PATH.'/control/');
@@ -24,14 +36,14 @@ if (isset($argv[1])) {
 //全站业务
 $urlInfo['www.manga.ae'] = [];
 $urlTemp = 'https://www.manga.ae/manga/page:';
-for ($i=1; $i <= 1; $i++) { 
+for ($i=1; $i <= $flag; $i++) { 
     $urlForTemp = $urlTemp.$i;
     $html = BypassCloudFlare($urlForTemp);
     phpQuery::newDocumentHTML($html);
     $articles = pq('div.mangacontainer');
     foreach ($articles as $k=>$article)
     {
-       
+        if($k >1) continue;
         $tag = "";
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
@@ -47,6 +59,7 @@ for ($i=1; $i <= 1; $i++) {
         $tags = trim($tag,',');
         $introduce = pq('.manga-details-extended h4:eq(2)')->text();
         $introduce = mb_substr($introduce,0,1000);
+        $author = pq('.manga-details-author h4:eq(0) a')->text();
         $name = pq($article)->find('a.manga:eq(1)')->text();
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
         $count = pq($article)->find('div.details:eq(1) > a')->text();
@@ -79,7 +92,7 @@ for ($i=1; $i <= 1; $i++) {
 
             }else{
 
-                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`pic`,`chapters_count`,`year`,`url`,`introduce`) VALUES('{$tags}','{$name}','{$pic}','{$count}','{$year}','{$url}','{$introduce}')");
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}')");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
                 {
@@ -214,7 +227,7 @@ function work()
         $callFunName = getControlFunFirstName($urlData['domain']).'_Funtion';
 
         //特殊设置
-        $curlOne = setCurlOPT($urlData['domain'], $curl);
+        //$curlOne = setCurlOPT($urlData['domain'], $curl);
         
     	$curl->add([
         		    'url' => $urlData['url'],

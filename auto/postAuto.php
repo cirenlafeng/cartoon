@@ -16,48 +16,78 @@ include_once(dirname(__FILE__).'/../conf/incloudeURL.php');
 echo "<pre>".date('Y-m-d H:i:s').'<br/>'.PHP_EOL;
 $stime = microtime(true);
 $dateTime3 = date('Y-m-d H:i:s',(time() - (86400*3)));
-foreach ($urlInfo['www.manga.ae'] as $key => $cartoon) {
-	// $sql = "SELECT * FROM `articles` WHERE `check` = '{$cartoon['check']}' AND `status` = 2 ORDER BY tag ASC , type ASC";
-	$sql = "SELECT  count(1) AS `count`,`tag`,`check`,`keywords` FROM `articles` WHERE `check` = '{$cartoon['check']}' GROUP BY `tag` ORDER BY `tag` ";
-	$cartoonList = $dbo->loadAssocList($sql);
-	foreach ($cartoonList as $k => $v) {
-		$tagSql = "SELECT * FROM `articles` WHERE `check` = '{$cartoon['check']}' AND `status` = 2 AND `tag` = '{$v['tag']}' AND `dateTime` >= '{$dateTime3}' ORDER BY `type` ASC";
-		$tagList = $dbo->loadAssocList($tagSql);
-		if(count($tagList) != $v['count'])
-		{
-			echo "#ERROR : BookId:{$v['check']} 章节数据不完整或已导入：".$v['tag'].' 已跳过'.PHP_EOL;
-			continue;
-		}else{
-			$url = "http://admin.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s";
-			$post_data['data'] 		= json_encode($tagList);
-			$post_data['bookId'] 	= $cartoon['check'];
-			$post_data['key']		= 'd5aafc3f489da27f4582d7a2ad76764069247_99999A';
-			$post_data['chapterId']	= $v['tag'];
-			$post_data['chapterName']  = $v['keywords'];
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-			$output = curl_exec($ch);
-			curl_close($ch);
-			$result = json_decode($output,true);
-			if(isset($result['status']))
-			{
-				if($result['status'] == 200)
-				{
-					$updateSql = "UPDATE `articles` SET `status` = 8 WHERE `check` = '{$cartoon['check']}' AND `tag` = '{$v['tag']}' ";
-					$dbo->exec($updateSql);
-					echo "#success : {$cartoon['check']} --> {$v['tag']} 导入成功!".PHP_EOL;
-					continue;
+
+/**
+*	漫画推送
+*	$post      推送数组；
+*/
+
+
+$sql = "SELECT * FROM `comics_list`";
+$cartoonList = $dbo->loadAssocList($sql);
+foreach($cartoonList as $key=>$val){
+	
+	$list_id = (int) $val['id'];
+	$sql = "SELECT count(1) as count,chapter,pagecount FROM `comics_chapters` WHERE `list_id`=".$list_id." AND status=2 GROUP BY `chapter`,`pagecount`";
+	$row = $dbo->loadAssocList($sql);
+	//按每本每章节推送
+	foreach($row as $k=>$v){
+		$post = [];
+		$post['cartoonInfo'] = $val;
+		if($v['count'] == $v['pagecount']){
+			$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
+			$row1 = $dbo->loadAssocList($sql1);
+
+			foreach ($row1 as $num=>$value) {
+				if($num == 0){
+					$post['detail']['source']['chapter_name'] = $value['chapter_name'];
+					$post['detail']['source']['chapter'] = $value['chapter'];
 				}
+				$temp = [];
+				$temp['page'] = (int) $value['page'];
+				$temp['pic'] = $value['pic'];
+				$temp['width'] = $value['width'];
+				$temp['height'] = $value['height'];
+				$post['detail']['content'][] = $temp;
+				
 			}
-			echo "#ERROR : BookId:{$v['check']} 数据导入失败：".$v['tag'].' 请重试'.$output.PHP_EOL;
+			pushApi($post,$list_id,$v['chapter']);
+			
+		}else{
+			echo "#Notice 当前章节不完整 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
 			continue;
+		}
+
+	}
+	
+}
+function pushApi($post,$list_id,$chapter)
+{
+
+	var_dump($post);
+	echo $list_id.'--->'.$chapter;die;
+	$url = "http://admin.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s";
+	$post_data['data'] 		= json_encode($post);
+	$post_data['bookId'] 	= $cartoon['check'];
+	$post_data['key']		= 'd5aafc3f489da27f4582d7a2ad76764069247_99999A';
+	$post_data['chapterId']	= $v['tag'];
+	$post_data['chapterName']  = $v['keywords'];
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+	$output = curl_exec($ch);
+	curl_close($ch);
+	$result = json_decode($output,true);
+	if(isset($result['status']))
+	{
+		if($result['status'] == 200)
+		{
+			$time = time();
+			$updateSql = "UPDATE `comics_chapters` SET `status` = 8  WHERE `list_id` = '{$list_id}' AND `chapter` = '{$chapter}'";
+			$dbo->exec($updateSql);
+			echo "#success : list_id={$list_id} --> chapter={$chapter} 导入成功!".PHP_EOL;
 		}
 	}
 }
-
-$etime = microtime(true);
-echo "Finished in .. ". round($etime - $stime, 3) ." seconds\n";
-// print_format($urlInfo, '$urlInfo');

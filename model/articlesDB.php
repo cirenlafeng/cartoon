@@ -7,8 +7,11 @@ $sqlBaseData = array(
     'chapter_name'=>0,
     'chapter'=>0,
     'page'=>0,
+    'pagecount' =>0,
     'pic'=>'',
     'thumbnail'=>'',
+    'width' =>0,
+    'height' =>0,
     'status'=>0,
     'create_time'=>time(),
     'update_time'=>time(),
@@ -31,7 +34,6 @@ function saveUrl($sql=array())
         $sqlData[$key] = $value;
     }
     extract($sqlData);//$sqlData to 变量
-
     global $dbo;
     $exist = $dbo->loadObject("SELECT 1 FROM `comics_chapters` WHERE `list_id` = '{$list_id}' AND `chapter` = '{$chapter}' AND `page` = '{$page}' LIMIT 1");
     if ($exist) {
@@ -40,7 +42,7 @@ function saveUrl($sql=array())
         return false;
     }
 
-    $sql = "INSERT INTO `comics_chapters` (`list_id`,`domain`, `chapter_name`, `chapter`, `status`, `page`,  `thumbnail`,`create_time`,`update_time` ) VALUES ('{$list_id}','{$domain}', '{$chapter_name}', '{$chapter}', '{$status}', '{$page}', '{$thumbnail}', '{$create_time}', '{$update_time}')";
+    $sql = "INSERT INTO `comics_chapters` (`list_id`,`domain`, `chapter_name`, `chapter`, `status`, `page`, `pagecount`, `thumbnail`,`create_time`,`update_time` ) VALUES ('{$list_id}','{$domain}', '{$chapter_name}', '{$chapter}', '{$status}', '{$page}', '{$pagecount}','{$thumbnail}', '{$create_time}', '{$update_time}')";
 
     try {
         $dbo->exec($sql);
@@ -137,7 +139,7 @@ function saveBody($sqlData='', $statuss = 2)
         @$statisticsInfo['saveBody']['#Error']['noTitle'][] = $urlID.' -> '.$url;
         return false;
     }
-    $sql = "UPDATE `comics_chapters` SET `status` = 2, `update_time` = '{$time}', `pic` = '{$pic}' WHERE `id` = '{$id}'";
+    $sql = "UPDATE `comics_chapters` SET `status` = 2, `update_time` = '{$time}', `pic` = '{$pic}',`width` = '{$width}',`height` = '{$height}' WHERE `id` = '{$id}'";
    
     
     // print_format($sql,'sql');return;
