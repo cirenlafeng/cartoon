@@ -43,7 +43,6 @@ for ($i=1; $i <= $flag; $i++) {
     $articles = pq('div.mangacontainer');
     foreach ($articles as $k=>$article)
     {
-        if($k >1) continue;
         $tag = "";
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
