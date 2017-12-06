@@ -43,22 +43,33 @@ for ($i=1; $i <= $flag; $i++) {
     $articles = pq('div.mangacontainer');
     foreach ($articles as $k=>$article)
     {
+        if($k >1) continue;
         $tag = "";
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
-        //if($k == 2) echo pq($article);die;
         $html1 = BypassCloudFlare($detail);
         phpQuery::newDocumentHTML($html1);
-        $list = pq('.manga-details-extended ul li');
+         $detail = pq('div.indexcontainer');
+        $list = pq($detail)->find('.manga-details-extended ul li');
         foreach ($list as $val)
         {
             $tmp = pq($val)->find('a:eq(0)')->text();
             $tag .= ','.$tmp;
         }
-        $tags = trim($tag,',');
-        $introduce = pq('.manga-details-extended h4:eq(2)')->text();
-        $introduce = mb_substr($introduce,0,1000);
-        $author = pq('.manga-details-author h4:eq(0) a')->text();
+        $tags = trim($tag,',');                                                                 #标签
+
+        $introduce = pq($detail)->find('.manga-details-extended h4:eq(2)')->text();
+        $introduce = mb_substr($introduce,0,1000);                                              #描述
+        $author = pq($detail)->find('.manga-details-author h4:eq(0) a')->text();                #作者
+         //书籍是否连载
+        $status = pq($detail)->find('div.manga-details-extended h4:eq(1)')->text();
+        if(preg_match('/مكتملة/',$status)){
+            $status =0;
+        }else{
+            $status = 1;
+        }
+
+        $number = (int) pq($article)->find('div.details:eq(0)')->text();                        #参与人数
         $name = pq($article)->find('a.manga:eq(1)')->text();
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
         $count = pq($article)->find('div.details:eq(1) > a')->text();
@@ -91,7 +102,7 @@ for ($i=1; $i <= $flag; $i++) {
 
             }else{
 
-                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}')");
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`,`number`,`status`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}',".$number.",".$status.")");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
                 {

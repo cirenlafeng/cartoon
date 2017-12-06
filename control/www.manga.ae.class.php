@@ -176,6 +176,7 @@ class www_manga_ae
 			echo "#continue : articlesDB.saveBody-->>BookId= {$data['list_id']} , Page : {$data['page']} is existed ....<br/>" . PHP_EOL;
 			return false;
 		}
+		$t = time(); 
 		$html = $data['html'];
 		$postData = [
     'appName'=>'sada',
@@ -183,7 +184,7 @@ class www_manga_ae
     'w'=>610,
     'h'=>1000,
     'fileContent'=>base64_encode($html),
-    'fileName'=>md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	
 	    //下载内容图片

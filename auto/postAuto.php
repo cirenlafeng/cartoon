@@ -63,31 +63,34 @@ foreach($cartoonList as $key=>$val){
 }
 function pushApi($post,$list_id,$chapter)
 {
-
-	var_dump($post);
-	echo $list_id.'--->'.$chapter;die;
-	$url = "http://admin.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s";
+	global $sysConfig;
+	global $dbo;
+    $url = $sysConfig['api']['url'];
+    $key = $sysConfig['api']['key'];
+	$url = $url;
 	$post_data['data'] 		= json_encode($post);
-	$post_data['bookId'] 	= $cartoon['check'];
-	$post_data['key']		= 'd5aafc3f489da27f4582d7a2ad76764069247_99999A';
-	$post_data['chapterId']	= $v['tag'];
-	$post_data['chapterName']  = $v['keywords'];
+	$post_data['key']		= $key;
+
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-	$output = curl_exec($ch);
-	curl_close($ch);
-	$result = json_decode($output,true);
-	if(isset($result['status']))
-	{
-		if($result['status'] == 200)
-		{
-			$time = time();
-			$updateSql = "UPDATE `comics_chapters` SET `status` = 8  WHERE `list_id` = '{$list_id}' AND `chapter` = '{$chapter}'";
-			$dbo->exec($updateSql);
-			echo "#success : list_id={$list_id} --> chapter={$chapter} 导入成功!".PHP_EOL;
-		}
-	}
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 180);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    $data = curl_exec($ch);
+    $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $info = json_decode($data);
+    if($httpCode == 200) {
+       	$time = time();
+		$updateSql = "UPDATE `comics_chapters` SET `status` = 8 , `update_time` = ".$time." WHERE `list_id` = '".$list_id."' AND `chapter` = '".$chapter."'";
+		$dbo->exec($updateSql);
+		echo "#success : list_id={$list_id} --> chapter={$chapter} 导入成功!".PHP_EOL;
+      	
+    }else{
+    	echo "#backinfo: ".$info['data'].PHP_EOL;
+    }
+ 
+
 }
