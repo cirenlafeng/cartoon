@@ -31,6 +31,7 @@ for ($i=1; $i <= 1; $i++) {
     $articles = pq('div.mangacontainer');
     foreach ($articles as $k=>$article)
     {
+       
         $tag = "";
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
@@ -44,6 +45,8 @@ for ($i=1; $i <= 1; $i++) {
             $tag .= ','.$tmp;
         }
         $tags = trim($tag,',');
+        $introduce = pq('.manga-details-extended h4:eq(2)')->text();
+        $introduce = mb_substr($introduce,0,1000);
         $name = pq($article)->find('a.manga:eq(1)')->text();
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
         $count = pq($article)->find('div.details:eq(1) > a')->text();
@@ -76,7 +79,7 @@ for ($i=1; $i <= 1; $i++) {
 
             }else{
 
-                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`pic`,`chapters_count`,`year`,`url`) VALUES('{$tags}','{$name}','{$pic}','{$count}','{$year}','{$url}')");
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`pic`,`chapters_count`,`year`,`url`,`introduce`) VALUES('{$tags}','{$name}','{$pic}','{$count}','{$year}','{$url}','{$introduce}')");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
                 {
