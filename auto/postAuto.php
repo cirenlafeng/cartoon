@@ -82,14 +82,14 @@ function pushApi($post,$list_id,$chapter)
     $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
     $info = json_decode($data);
-    if($info['status'] == 200) {
+    if($info->status == 200) {
        	$time = time();
 		$updateSql = "UPDATE `comics_chapters` SET `status` = 8 , `update_time` = ".$time." WHERE `list_id` = '".$list_id."' AND `chapter` = '".$chapter."'";
 		$dbo->exec($updateSql);
 		echo "#success : list_id={$list_id} --> chapter={$chapter} 导入成功!".PHP_EOL;
       	
     }else{
-    	echo "#backinfo: ".$info['data'].PHP_EOL;
+    	echo "#backinfo: ".$info->data.PHP_EOL;
     }
  
 
