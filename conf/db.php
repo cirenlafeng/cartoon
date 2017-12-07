@@ -9,21 +9,16 @@ $sysConfig['redis'] = '127.0.0.1';
 
 $sysConfig['db']['host'] = '127.0.0.1';
 $sysConfig['db']['user'] = 'root';
-$sysConfig['db']['pwd'] = 'root';
+$sysConfig['db']['pwd'] = '';
 $sysConfig['db']['name'] = 'comics';
 $sysConfig['db']['char'] = 'utf8';
 
 
-$sysConfig['api']['sms_mail'] = 'http://reportmail.mysada.com/email_sms_api.php';
+//测试服
+$sysConfig['api']['url'] = 'http://comicstest.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s';
+$sysConfig['api']['key'] = '47b84030d53d2f94339e43c552062ff9';
 
-//站点cookie设置
-$setCookie['www.alarabiya.net'] = 'YPF8827340282Jdskjhfiw_928937459182JAX666=13.56.108.107';
-$setCookie['www.gheir.com'] = 'ASP.NET_SessionId=bn0x0z45yaaj00m5u1e4ea45';
+//正式服
+// $sysConfig['api']['url'] = 'http://admin.mobibookapp.com/api/cartoon/set_temp_xsda486_4asdfg_5de_8r7w8s_df45s';
+// $sysConfig['api']['key'] = 'd5aafc3f489da27f4582d7a2ad76764069247_99999A';
 
-$sysConfig['admin']['user'] = 'admin';
-$sysConfig['admin']['pwd'] = 'admin';
-//视频CDN
-$sysConfig['video']['cdn_url'] = 'http://pushcdn.mysada.com/app_delay.php?key=58307deb71dd486ef8afc742056780c0';
-//图片CDN
-$sysConfig['RRC_GATHER_URL'] = 'http://pushcdn.mysada.com/api.php?key=58307deb71dd486ef8afc742056780c0';
-//print_r($sysConfig);
