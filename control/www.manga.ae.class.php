@@ -192,10 +192,12 @@ class www_manga_ae
 	    if (!empty($temp['content'])) {
 	        $data['pic'] = $temp['content'];
 		    $data['time'] = time();
-		    //获取图片宽高
+		    //获取图片宽高  610  1000
 			$imginfo = getimagesize($temp['content']);
-		    $data['width'] = $imginfo[0];
-			$data['height'] = $imginfo[1];
+			if($imginfo[0]) $imginfo[0]=610;
+			if($imginfo[1]) $imginfo[1]=1000;
+		    $data['width'] = (int) $imginfo[0];
+			$data['height'] = (int) $imginfo[1];
 		    unset($data['html']);
 			return $data;
 	    }else{
