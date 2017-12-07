@@ -82,7 +82,7 @@ function pushApi($post,$list_id,$chapter)
     $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
     curl_close($ch);
     $info = json_decode($data);
-    if($httpCode == 200) {
+    if($info['status'] == 200) {
        	$time = time();
 		$updateSql = "UPDATE `comics_chapters` SET `status` = 8 , `update_time` = ".$time." WHERE `list_id` = '".$list_id."' AND `chapter` = '".$chapter."'";
 		$dbo->exec($updateSql);
