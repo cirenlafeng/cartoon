@@ -79,6 +79,7 @@ for ($i=1; $i <= $flag; $i++) {
         $year = empty($year) ? 0 : $year;
         $pic = empty($pic) ? '' : $pic;
 
+        $pic = imgIcon($pic,$name);
         if(!empty($name) && !empty($url))
         {
             $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
@@ -117,6 +118,29 @@ for ($i=1; $i <= $flag; $i++) {
         }
     }
     phpQuery::unloadDocuments();
+}
+
+function imgIcon($pic,$name){
+    $t = time(); 
+    $html = BypassCloudFlare($pic);
+    $postData = [
+        'appName'=>'sada',
+        'type'=>'file',
+        'w'=>610,
+        'h'=>1000,
+        'fileContent'=>base64_encode($html),
+        'fileName'=>$t.md5($name).substr(strrchr($pic, '/'),1),
+    ];
+    
+    //下载内容图片
+    $temp = (array)json_decode(srcPostAPI($postData));
+    if (!empty($temp['content'])) {
+        echo "#Succes : get cdn succes  --->  BookId : {$name}".PHP_EOL;
+        return $temp['content'];
+    }else{
+        echo "#Error : get cdn error  --->  BookId : {$name}".PHP_EOL;
+        return false;
+    }
 }
 
 //单本列表业务
