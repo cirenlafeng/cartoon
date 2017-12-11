@@ -184,7 +184,7 @@ class www_manga_ae
     'w'=>610,
     'h'=>1000,
     'fileContent'=>base64_encode($html),
-    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+    'fileName'=>md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	
 	    //下载内容图片
