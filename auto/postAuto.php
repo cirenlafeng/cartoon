@@ -35,7 +35,7 @@ foreach($cartoonList as $key=>$val){
 		$post = [];
 		$post['cartoonInfo'] = $val;
 		if($v['count'] == $v['pagecount']){
-			if($v['count']  > 5){
+			//if($v['count']  > 5){
 				$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
 				$row1 = $dbo->loadAssocList($sql1);
 
@@ -53,9 +53,9 @@ foreach($cartoonList as $key=>$val){
 					
 				}
 				pushApi($post,$list_id,$v['chapter']);
-			}else{
-				echo "#Notice 当前章节页数小于5张 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
-			}
+			// }else{
+			// 	echo "#Notice 当前章节页数小于5张 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
+			// }
 			
 			
 		}else{
