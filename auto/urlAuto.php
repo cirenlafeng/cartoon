@@ -36,7 +36,7 @@ if (isset($argv[1])) {
 //全站业务
 $urlInfo['www.manga.ae'] = [];
 $urlTemp = 'https://www.manga.ae/manga/page:';
-for ($i=1; $i <= $flag; $i++) { 
+for ($i=1; $i <= 3; $i++) { 
     $urlForTemp = $urlTemp.$i;
     $html = BypassCloudFlare($urlForTemp);
     phpQuery::newDocumentHTML($html);
@@ -70,6 +70,7 @@ for ($i=1; $i <= $flag; $i++) {
 
         $number = (int) pq($article)->find('div.details:eq(0)')->text();                        #参与人数
         $name = pq($article)->find('a.manga:eq(1)')->text();
+        $name = str_replace("'","",$name);
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
         $count = pq($article)->find('div.details:eq(1) > a')->text();
         $year = pq($article)->find('div.year')->text();
@@ -157,6 +158,7 @@ foreach($urlInfo['www.manga.ae'] as $urlData)
         $url = substr($url,0,strlen($str)-2).'0/full';
         $keyword = pq($article)->find('a.chapter')->text();
         $keyword = substr(strrchr($keyword, ':'),1);
+        $keyword = str_replace("'","",$keyword);
         $chapter = findNum(substr(pq($article)->find('a.chapter')->text(),0,5));
         if(empty($keyword))
         {
