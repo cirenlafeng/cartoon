@@ -184,7 +184,7 @@ class www_manga_ae
     'w'=>610,
     'h'=>1000,
     'fileContent'=>base64_encode($html),
-    'fileName'=>md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	
 	    //下载内容图片
@@ -194,8 +194,8 @@ class www_manga_ae
 		    $data['time'] = time();
 		    //获取图片宽高  610  1000
 			$imginfo = getimagesize($temp['content']);
-			if($imginfo[0]) $imginfo[0]=610;
-			if($imginfo[1]) $imginfo[1]=1000;
+			if(!$imginfo[0]) $imginfo[0]=610;
+			if(!$imginfo[1]) $imginfo[1]=1000;
 		    $data['width'] = (int) $imginfo[0];
 			$data['height'] = (int) $imginfo[1];
 		    unset($data['html']);
