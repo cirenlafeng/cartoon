@@ -8,9 +8,15 @@ date_default_timezone_set('Asia/Shanghai');
 error_reporting(E_ALL ^ E_NOTICE);
 
 //禁止浏览器访问
-// if (PHP_SAPI != 'cli') {
-//     return phpinfo();
-// }
+if (PHP_SAPI != 'cli') {
+    return phpinfo();
+}
+//命令行参数指定章节获取 
+$flag = [];
+if($argv[2] || $argv[3]){
+    $flag[0] = (int) $argv[2];  #list_id
+    $flag[1] = (int) $argv[3];   #章节
+}
 
 //全局加载
 include_once(dirname(__FILE__).'/../conf/include.php');
@@ -82,11 +88,21 @@ function work()
 	global $urlInfo;
 	global $dbo;
 	global $control;
+    global $flag;
     $dateTime3 = time() - (86400*3);
     $countSql = '';
     $sql = '';
-    $countSql = "SELECT count(1) as count FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000";
-	$sql = "SELECT * FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000 ";
+    if($flag[0]){
+        $countSql = "SELECT count(1) as count FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000";
+        if($flag[1]){
+            $sql = "SELECT * FROM `comics_chapters` WHERE `status` = 0 and `list_id`= '{$flag[0]}' and `chapter`= '{$flag[1]}' and `create_time` >= '{$dateTime3}' LIMIT 8000 ";
+        }else{
+            $sql = "SELECT * FROM `comics_chapters` WHERE `status` = 0 and `list_id`= '{$flag[0]}' and `create_time` >= '{$dateTime3}' LIMIT 8000 ";
+        }  
+    }else{
+        $countSql = "SELECT count(1) as count FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000";
+        $sql = "SELECT * FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000 ";
+    }
 	$row = $dbo->loadObject($countSql);
 	$count =$row->count;
 	echo "#SQL :: {$sql}".PHP_EOL;
