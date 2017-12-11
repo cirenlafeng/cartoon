@@ -79,7 +79,7 @@ for ($i=1; $i <= $flag; $i++) {
         $year = empty($year) ? 0 : $year;
         $pic = empty($pic) ? '' : $pic;
 
-        $pic = imgIcon($pic,$name);
+        
         if(!empty($name) && !empty($url))
         {
             $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
@@ -101,7 +101,7 @@ for ($i=1; $i <= $flag; $i++) {
                 }
 
             }else{
-
+                $pic = imgIcon($pic,$name);
                 $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`,`number`,`status`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}',".$number.",".$status.")");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
