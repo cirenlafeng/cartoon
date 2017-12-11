@@ -35,23 +35,28 @@ foreach($cartoonList as $key=>$val){
 		$post = [];
 		$post['cartoonInfo'] = $val;
 		if($v['count'] == $v['pagecount']){
-			$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
-			$row1 = $dbo->loadAssocList($sql1);
+			if($v['count']  > 5){
+				$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
+				$row1 = $dbo->loadAssocList($sql1);
 
-			foreach ($row1 as $num=>$value) {
-				if($num == 0){
-					$post['detail']['source']['chapter_name'] = $value['chapter_name'];
-					$post['detail']['source']['chapter'] = $value['chapter'];
+				foreach ($row1 as $num=>$value) {
+					if($num == 0){
+						$post['detail']['source']['chapter_name'] = $value['chapter_name'];
+						$post['detail']['source']['chapter'] = $value['chapter'];
+					}
+					$temp = [];
+					$temp['page'] = (int) $value['page'];
+					$temp['pic'] = $value['pic'];
+					$temp['width'] = $value['width'];
+					$temp['height'] = $value['height'];
+					$post['detail']['content'][] = $temp;
+					
 				}
-				$temp = [];
-				$temp['page'] = (int) $value['page'];
-				$temp['pic'] = $value['pic'];
-				$temp['width'] = $value['width'];
-				$temp['height'] = $value['height'];
-				$post['detail']['content'][] = $temp;
-				
+				pushApi($post,$list_id,$v['chapter']);
+			}else{
+				echo "#Notice 当前章节页数小于5张 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
 			}
-			pushApi($post,$list_id,$v['chapter']);
+			
 			
 		}else{
 			echo "#Notice 当前章节不完整 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
