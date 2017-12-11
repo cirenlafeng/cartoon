@@ -59,6 +59,7 @@ for ($i=1; $i <= 3; $i++) {
 
         $introduce = pq($detail)->find('.manga-details-extended h4:eq(2)')->text();
         $introduce = mb_substr($introduce,0,1000);                                              #描述
+        $introduce = str_replace("'","\'",$introduce);
         $author = pq($detail)->find('.manga-details-author h4:eq(0) a')->text();                #作者
          //书籍是否连载
         $status = pq($detail)->find('div.manga-details-extended h4:eq(1)')->text();
