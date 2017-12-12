@@ -93,7 +93,7 @@ function work()
     $countSql = '';
     $sql = '';
     if($flag[0]){
-        $countSql = "SELECT count(1) as count FROM `comics_chapters` WHERE `status` = 0 and `create_time` >= '{$dateTime3}' LIMIT 8000";
+        $countSql = "SELECT count(1) as count FROM `comics_chapters` WHERE `status` = 0 and `list_id`= '{$flag[0]}' and `create_time` >= '{$dateTime3}' LIMIT 8000";
         if($flag[1]){
             $sql = "SELECT * FROM `comics_chapters` WHERE `status` = 0 and `list_id`= '{$flag[0]}' and `chapter`= '{$flag[1]}' and `create_time` >= '{$dateTime3}' LIMIT 8000 ";
         }else{
