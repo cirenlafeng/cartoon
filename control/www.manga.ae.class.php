@@ -119,7 +119,7 @@ class www_manga_ae
 				}
 				$temp['thumbnail'] = $url;
 				$temp['domain'] = 'www.manga.ae';
-				$temp['pagecount'] = $pageEnd;
+				$temp['pagecount'] = $pageCount;
 				
 				$sqlData[] = $temp;
 			}
