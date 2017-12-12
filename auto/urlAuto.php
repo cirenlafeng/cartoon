@@ -100,7 +100,8 @@ for ($i=1; $i <= 3; $i++) {
                         $addArr['list_id'] = $row['id'];
                         $urlInfo['www.manga.ae'][] = $addArr;
                     }
-                }else{
+                }
+                /*else{
                     //本书章节没拿完则继续
                     $row1 = $dbo->loadAssocList("SELECT chapter FROM `comics_chapters` WHERE `list_id`='14' GROUP BY `chapter`");
                     if($count > count($row1)){
@@ -111,6 +112,7 @@ for ($i=1; $i <= 3; $i++) {
                         $urlInfo['www.manga.ae'][] = $addArr;
                     }
                 }
+                */
 
             }else{
                 $pic = imgIcon($pic,$name);
