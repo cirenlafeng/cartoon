@@ -102,8 +102,8 @@ for ($i=1; $i <= 3; $i++) {
                     }
                 }else{
                     //本书章节没拿完则继续
-                    $row1 = $dbo->loadAssoc("SELECT count(1) as count FROM `comics_chapters` WHERE `list_id`=".$row['id']);
-                    if($count > $row1['count']){
+                    $row1 = $dbo->loadAssocList("SELECT chapter FROM `comics_chapters` WHERE `list_id`='14' GROUP BY `chapter`");
+                    if($count > count($row1)){
                         echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
                         $addArr = [];
                         $addArr['url'] = $url;
