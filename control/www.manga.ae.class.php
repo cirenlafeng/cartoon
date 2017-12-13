@@ -63,7 +63,7 @@ class www_manga_ae
 		//处理内容页面：自己选择处理html和xml方法  newDocumentHTML  newDocumentXML[xml很多没有缩略图]
 		phpQuery::newDocumentHTML($result['content']);//解析html
 
-		$chapter = (int) pq('a.chapter')->text();
+		$chapter = (float) pq('a.chapter')->text();
 		if(empty($chapter))
 		{
 			$chapter = 0;
