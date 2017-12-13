@@ -40,7 +40,7 @@ foreach($cartoonList as $key=>$val){
 				$row1 = $dbo->loadAssocList($sql1);
 
 				foreach ($row1 as $num=>$value) {
-					if($num == 0){
+					if($num < 2){
 						$post['detail']['source']['chapter_name'] = $value['chapter_name'];
 						$post['detail']['source']['chapter'] = $value['chapter'];
 					}
