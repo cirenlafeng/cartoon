@@ -36,7 +36,7 @@ if (isset($argv[1])) {
 //全站业务
 $urlInfo['www.manga.ae'] = [];
 $urlTemp = 'https://www.manga.ae/manga/page:';
-for ($i=1; $i <= 3; $i++) { 
+for ($i=1; $i <= 1; $i++) { 
     $urlForTemp = $urlTemp.$i;
     $html = BypassCloudFlare($urlForTemp);
     phpQuery::newDocumentHTML($html);
@@ -44,6 +44,7 @@ for ($i=1; $i <= 3; $i++) {
     foreach ($articles as $k=>$article)
     {
         $tag = "";
+        if($k != 46) continue;
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
         $html1 = BypassCloudFlare($detail);

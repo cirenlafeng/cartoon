@@ -122,7 +122,7 @@ function work()
 				{
 					if (strlen($article['thumbnail']) > 5) {
 						$curl->add([
-						    'url' => $article['thumbnail'],
+						    'url' => str_replace(' ','%20',$article['thumbnail']),
 						    'args' => $article,
 						], $callFunName);
 						$curl->cbTask = null;

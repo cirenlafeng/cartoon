@@ -63,81 +63,43 @@ class www_manga_ae
 		//处理内容页面：自己选择处理html和xml方法  newDocumentHTML  newDocumentXML[xml很多没有缩略图]
 		phpQuery::newDocumentHTML($result['content']);//解析html
 
-		$chapter = (float) pq('a.chapter')->text();
-		if(empty($chapter))
-		{
-			$chapter = 0;
-		}
-		if($chapter == 0)
-		{
-			return false;
-		}else{
-			global $dbo;
-			$exist = $dbo->loadObject("SELECT 1 FROM `comics_chapters` WHERE `list_id` = '{$args['list_id']}' AND `chapter`= '{$chapter}' LIMIT 1");
-			if ($exist) {
-		        echo "#continue : articlesDB.saveUrl-->>BookId= {$args['list_id']} , Chapter= {$chapter} is existed ....<br/>" . PHP_EOL;
-		        @$statisticsInfo['saveUrl']['#Warning']++;
-		        return false;
-		    }
-		}
-		$sqlBaseData['chapter'] = $chapter; //章节;
-		$pageFirst = pq('div#morepages > a:first')->text();//第一页
-		$pageEnd = pq('div#morepages > a:last')->text();//末页
-
-		$pageCount = $pageEnd - $pageFirst + 1;
-		// echo $pageCount;exit();
-		//选择队列区块
-		$articles = pq('#showchaptercontainer');
-		// print_format($articles);
-
-		//提取页面url列表，缩略图；使用phpQuery、simple_html_dom、正则表达式处理
+		//获取所有图片
+		$dir = "C:\wamp64\www\cartoon\control\sup78";  //要获取的目录
+		$flag = getPregData('/control(.*?)$/ism',$dir).'/';
+		$flag = str_replace('\\','',$flag);
 		$sqlData = array();
-		foreach ($articles as $article)
-		{
-			$temp = $sqlBaseData;
-			//内文链接
-			$url = pq($article)->find('img')->attr('src');
-			if (strlen($url) > 10)
-			{
-				$temp['page'] = pq($article)->find('span')->text();
-				if(empty($temp['page']))
-				{
-					continue;
-				}
-				if((substr(strrchr($url, '.'),1) != 'jpg') && (substr(strrchr($url, '.'),1) != 'png') && (substr(strrchr($url, '.'),1) != 'gif') && (substr(strrchr($url, '.'),1) != 'JPG') && (substr(strrchr($url, '.'),1) != 'PNG') && (substr(strrchr($url, '.'),1) != 'GIF') )
-				{
-					if(substr(strrchr($url, '.'),1) == 'db')
-					{
-						$pageCount = $pageCount - 1;
-						continue;
-					}
+		//先判断指定的路径是不是一个文件夹
+		if (is_dir($dir)){
+			$temp = [];
+			$temp['list_id'] = 638;
+			$temp['domain'] = 'www.manga.ae';
+			$temp['chapter_name'] = '-';
+			$temp['chapter'] = 78;
+
+			if ($dh = opendir($dir)){
+				$a=0;
+				while (($file = readdir($dh))!= false){
 					
+					//文件名的全路径 包含文件名
+					if($file == '.' || $file == '..') continue;
+					if(!preg_match('/\.jpg/',$file)) continue;
+					$a++;
+					$filePath = $dir.$file;
+					$temp['page'] = $a;
+					$temp['thumbnail'] = 'http://localhost/cartoon/control/'.$flag.$file;
+					$temp['width'] = 610;
+					$temp['height'] = 1000;
+					$temp['status'] = 0;
+					$temp['pagecount'] = 24;
+					//echo $filePath.PHP_EOL;
+					$sqlData[] = $temp;
 				}
-				if(substr(strrchr($url, '/'),1,3) == '00.')
-				{
-					continue;
-				}
-				$temp['thumbnail'] = $url;
-				$temp['domain'] = 'www.manga.ae';
-				$temp['pagecount'] = $pageCount;
 				
-				$sqlData[] = $temp;
+				
+				closedir($dh);
 			}
 		}
-
-		phpQuery::unloadDocuments();
-		//print_r($sqlData);exit();
-		//print_format($sqlData,'$sqlData');return;
-		//保存url信息
-		if (count($sqlData) != $pageCount) {
-			echo "#ERROR !!! for pageCount  . {$args['url']}  .... error !".PHP_EOL;
-			return false;
-		}elseif((count($sqlData) == $pageCount) && !empty($pageCount) && $pageCount > 0 ){
-			saveUrlList($sqlData, $args);
-		}else{
-			echo "#ERROR !!! for pageCount  . {$args['url']}  .... error !".PHP_EOL;
-			return false;
-		}
+		saveUrlList($sqlData, $args);
 	}
 
 	//这个文件基本不用动

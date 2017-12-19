@@ -23,18 +23,33 @@ $dateTime3 = date('Y-m-d H:i:s',(time() - (86400*3)));
 */
 
 
-$sql = "SELECT * FROM `comics_list`";
+$sql = "SELECT * FROM `comics_list` WHERE id=64";
 $cartoonList = $dbo->loadAssocList($sql);
+
 foreach($cartoonList as $key=>$val){
 	
-	$list_id = (int) $val['id'];
+	$list_id = 638;
 	$sql = "SELECT count(1) as count,chapter,pagecount FROM `comics_chapters` WHERE `list_id`=".$list_id." AND status=2 GROUP BY `chapter`,`pagecount`";
 	$row = $dbo->loadAssocList($sql);
 	//按每本每章节推送
+
 	foreach($row as $k=>$v){
 		$post = [];
+		$val['id'] = $list_id;
+		$val['tags'] = '';
+		$val['name'] = 'Superman and Batman';
+		$val['author'] = 'string';
+		$val['pic'] = 'http://www.temp.com';
+		$val['chapters_count'] = 0;
+		$val['year'] = 1234;
+		$val['url'] = 'http://www.temp.com';
+		$val['introduce'] = 'string';
+		$val['number'] = 0;
+		$val['status'] = 0;
+
 		$post['cartoonInfo'] = $val;
-		if($v['count'] == $v['pagecount']){
+//var_dump($post);die;
+		//if($v['count'] == $v['pagecount']){
 			//if($v['count']  > 5){
 				$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
 				$row1 = $dbo->loadAssocList($sql1);
@@ -58,10 +73,10 @@ foreach($cartoonList as $key=>$val){
 			// }
 			
 			
-		}else{
-			echo "#Notice 当前章节不完整 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
-			continue;
-		}
+		// }else{
+		// 	echo "#Notice 当前章节不完整 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
+		// 	continue;
+		// }
 
 	}
 	
