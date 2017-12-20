@@ -35,8 +35,12 @@ foreach($cartoonList as $key=>$val){
 		$post = [];
 		$post['cartoonInfo'] = $val;
 		if($v['count'] == $v['pagecount']){
-			//if($v['count']  > 5){
-				$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
+				if(strpos($v['chapter'],'.')){
+					$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter` LIKE '{$v['chapter']}'";
+				}else{
+					$sql1 = "SELECT `chapter_name`,`chapter`,`page`,`pagecount`,`width`,`height`,`pic` FROM `comics_chapters` WHERE `list_id`=".$list_id." AND `status`=2 AND `chapter`=".$v['chapter'];
+				}
+				
 				$row1 = $dbo->loadAssocList($sql1);
 
 				foreach ($row1 as $num=>$value) {
@@ -53,9 +57,6 @@ foreach($cartoonList as $key=>$val){
 					
 				}
 				pushApi($post,$list_id,$v['chapter']);
-			// }else{
-			// 	echo "#Notice 当前章节页数小于5张 list_id={$list_id} chapter={$v['chapter']}".PHP_EOL;
-			// }
 			
 			
 		}else{
@@ -89,7 +90,12 @@ function pushApi($post,$list_id,$chapter)
     $info = json_decode($data);
     if($info->status == 200) {
        	$time = time();
-		$updateSql = "UPDATE `comics_chapters` SET `status` = 8 , `update_time` = ".$time." WHERE `list_id` = '".$list_id."' AND `chapter` = '".$chapter."'";
+       	if(strpos($chapter,'.')){
+       		$updateSql = "UPDATE `comics_chapters` SET `status` = 8 , `update_time` = ".$time." WHERE `list_id` = '".$list_id."' AND `chapter` LIKE '{$chapter}'";
+       	}else{
+       		$updateSql = "UPDATE `comics_chapters` SET `status` = 8 , `update_time` = ".$time." WHERE `list_id` = '".$list_id."' AND `chapter` = '".$chapter."'";
+       	}
+		
 		$dbo->exec($updateSql);
 		echo "#success : list_id={$list_id} --> chapter={$chapter} 导入成功!".PHP_EOL;
       	
