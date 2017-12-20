@@ -100,6 +100,7 @@ function pushApi($post,$list_id,$chapter)
 		echo "#success : list_id={$list_id} --> chapter={$chapter} 导入成功!".PHP_EOL;
       	
     }else{
+    	echo "#Notice  : list_id={$list_id} --> chapter={$chapter} 导入失败!".PHP_EOL;
     	echo "#backinfo: ".$info->data.PHP_EOL;
     }
  
