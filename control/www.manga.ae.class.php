@@ -86,7 +86,7 @@ class www_manga_ae
 
 		$pageCount = $pageEnd - $pageFirst + 1;
 		//获取子元素个数
-		$pageCount = pq('div#morepages')->children('span')->length();
+		$pageCount = pq('div#morepages')->children('a')->length();
 		//选择队列区块
 		$articles = pq('#showchaptercontainer');
 		// print_format($articles);
@@ -101,10 +101,10 @@ class www_manga_ae
 			if (strlen($url) > 10)
 			{
 				$temp['page'] = pq($article)->find('span')->text();
-				if(empty($temp['page']))
-				{
-					continue;
-				}
+				// if(empty($temp['page']))
+				// {
+				// 	continue;
+				// }
 				if((substr(strrchr($url, '.'),1) != 'jpg') && (substr(strrchr($url, '.'),1) != 'png') && (substr(strrchr($url, '.'),1) != 'gif') && (substr(strrchr($url, '.'),1) != 'JPG') && (substr(strrchr($url, '.'),1) != 'PNG') && (substr(strrchr($url, '.'),1) != 'GIF') )
 				{
 					if(substr(strrchr($url, '.'),1) == 'db')
@@ -121,12 +121,11 @@ class www_manga_ae
 				$temp['thumbnail'] = $url;
 				$temp['domain'] = 'www.manga.ae';
 				
-				
-				$sqlData[] = $temp;
 			}else{
 				$pageCount -=1;
 			}
 			$temp['pagecount'] = $pageCount;
+			$sqlData[] = $temp;
 		}
 
 		phpQuery::unloadDocuments();
