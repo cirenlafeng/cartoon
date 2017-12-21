@@ -113,10 +113,10 @@ class www_manga_ae
 					}
 					
 				}
-				if(substr(strrchr($url, '/'),1,3) == '00.')
-				{
-					continue;
-				}
+				// if(substr(strrchr($url, '/'),1,3) == '00.')
+				// {
+				// 	continue;
+				// }
 				$temp['thumbnail'] = $url;
 				$temp['domain'] = 'www.manga.ae';
 				$temp['pagecount'] = $pageCount;
