@@ -43,6 +43,7 @@ for ($i=1; $i <= 30; $i++) {
     $articles = pq('div.mangacontainer');
     foreach ($articles as $k=>$article)
     {
+        echo $k.PHP_EOL;
         $tag = "";
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
@@ -84,14 +85,31 @@ for ($i=1; $i <= 30; $i++) {
         
         if(!empty($name) && !empty($url))
         {
-            $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count` FROM `comics_list` WHERE `name` LIKE '{$name}'");
+            $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count`,`update_time` FROM `comics_list` WHERE `name` LIKE '{$name}'");
             //判断是否有该书数据
             if($row)
             {
                 //判断是否有更新
                 if($count > $row['chapters_count'])
                 {
-                    $re = $dbo->exec("UPDATE `comics_list` SET `chapters_count` = '{$count}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                    if(empty($row['update_time'])){
+                        $tmp=[];
+                        $tmp[] = time();
+                        $update_day = 0;
+                    }else{
+                        //记录每次更新时间求平均值
+                        $tmp = unserialize($row['update_time']);
+                        $tmp[] = time();
+                        $num = count($tmp)-1;
+                        foreach ($tmp as $t) {
+                            $i = $num-1;
+                            $day = $tmp[$num] - $tmp[$i];
+                            $update_day = ceil($day/86400);
+                        }
+                        
+                    }
+                    $update_time = serialize($tmp);
+                    $re = $dbo->exec("UPDATE `comics_list` SET `chapters_count` = '{$count}',`update_time` = '{$update_time}',`update_day` = '{$update_day}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
                     if($re)
                     {
                         echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
@@ -117,7 +135,10 @@ for ($i=1; $i <= 30; $i++) {
 
             }else{
                 $pic = imgIcon($pic,$name);
-                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`,`number`,`status`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}',".$number.",".$status.")");
+                $temp = [];
+                $temp[] = time();
+                $update_time = serialize($temp);
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`,`number`,`status`,`update_time`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}','{$number}','{$status}','{$update_time}')");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
                 {
