@@ -85,7 +85,8 @@ class www_manga_ae
 		$pageEnd = pq('div#morepages > a:last')->text();//末页
 
 		$pageCount = $pageEnd - $pageFirst + 1;
-		// echo $pageCount;exit();
+		//获取子元素个数
+		$pageCount = pq('div#morepages')->children('span')->length();
 		//选择队列区块
 		$articles = pq('#showchaptercontainer');
 		// print_format($articles);
@@ -119,10 +120,13 @@ class www_manga_ae
 				// }
 				$temp['thumbnail'] = $url;
 				$temp['domain'] = 'www.manga.ae';
-				$temp['pagecount'] = $pageCount;
+				
 				
 				$sqlData[] = $temp;
+			}else{
+				$pageCount -=1;
 			}
+			$temp['pagecount'] = $pageCount;
 		}
 
 		phpQuery::unloadDocuments();
