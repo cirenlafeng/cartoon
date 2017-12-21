@@ -1,0 +1,4 @@
+.idea/*
+.svn/*
+conf/db.php
+/nbproject/private/
