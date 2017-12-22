@@ -44,19 +44,22 @@ for ($i=1; $i <= 30; $i++) {
     foreach ($articles as $k=>$article)
     {
         echo $k.PHP_EOL;
-        $tag = "";
+        $tag = '';
         //详情页地址获取,用于抓取标签
         $detail = pq($article)->find('a.manga:eq(0)')->attr('href');
         $html1 = BypassCloudFlare($detail);
         phpQuery::newDocumentHTML($html1);
-         $detail = pq('div.indexcontainer');
+        $detail = pq('div.indexcontainer');
         $list = pq($detail)->find('.manga-details-extended ul li');
         foreach ($list as $val)
         {
             $tmp = pq($val)->find('a:eq(0)')->text();
-            $tag .= ','.$tmp;
+            if(!empty($tmp)){
+                $tag .= ','.$tmp;
+            }
+            
         }
-        $tags = trim($tag,',');                                                                 #标签
+        $tags = trim($tag,',');                                                  #标签
 
         $introduce = pq($detail)->find('.manga-details-extended h4:eq(2)')->text();
         $introduce = mb_substr($introduce,0,1000);                                              #描述
