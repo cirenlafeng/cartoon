@@ -36,7 +36,7 @@ if (isset($argv[1])) {
 //全站业务
 $urlInfo['www.manga.ae'] = [];
 $urlTemp = 'https://www.manga.ae/manga/page:';
-for ($i=1; $i <= 30; $i++) { 
+for ($i=1; $i <= 5; $i++) { 
     $urlForTemp = $urlTemp.$i;
     $html = BypassCloudFlare($urlForTemp);
     phpQuery::newDocumentHTML($html);
@@ -50,48 +50,19 @@ for ($i=1; $i <= 30; $i++) {
         $html1 = BypassCloudFlare($detail);
         phpQuery::newDocumentHTML($html1);
         $detail = pq('div.indexcontainer');
-        $list = pq($detail)->find('.manga-details-extended ul li');
-        foreach ($list as $val)
-        {
-            $tmp = pq($val)->find('a:eq(0)')->text();
-            if(!empty($tmp)){
-                $tag .= ','.$tmp;
-            }
-            
-        }
-        $tags = trim($tag,',');                                                  #标签
-
-        $introduce = pq($detail)->find('.manga-details-extended h4:eq(2)')->text();
-        $introduce = mb_substr($introduce,0,1000);                                              #描述
-        $introduce = str_replace("'","\'",$introduce);
-        $author = pq($detail)->find('.manga-details-author h4:eq(0) a')->text();                #作者
-         //书籍是否连载
-        $status = pq($detail)->find('div.manga-details-extended h4:eq(1)')->text();
-        if(preg_match('/مكتملة/',$status)){
-            $status =0;
-        }else{
-            $status = 1;
-        }
-
-        $number = (int) pq($article)->find('div.details:eq(0)')->text();                        #参与人数
+        
         $name = pq($article)->find('a.manga:eq(1)')->text();
         $name = str_replace("'","",$name);
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
-        $count = pq($article)->find('div.details:eq(1) > a')->text();
-        $year = pq($article)->find('div.year')->text();
-        $pic = pq($article)->find('img:eq(0)')->attr('src');
-
-        $count = empty($count) ? 0 : $count;
-        $year = empty($year) ? 0 : $year;
-        $pic = empty($pic) ? '' : $pic;
-
-        
+           
         if(!empty($name) && !empty($url))
         {
             $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count`,`update_time` FROM `comics_list` WHERE `name` LIKE '{$name}'");
             //判断是否有该书数据
             if($row)
             {
+                $count = pq($article)->find('div.details:eq(1) > a')->text();
+                $count = empty($count) ? 0 : $count;
                 //判断是否有更新
                 if($count > $row['chapters_count'])
                 {
@@ -121,22 +92,52 @@ for ($i=1; $i <= 30; $i++) {
                         $addArr['list_id'] = $row['id'];
                         $urlInfo['www.manga.ae'][] = $addArr;
                     }
-                }
-                /*else{
+                }else{
+                    continue;
                     //本书章节没拿完则继续
-                    $row1 = $dbo->loadAssocList("SELECT chapter FROM `comics_chapters` WHERE `list_id`='14' GROUP BY `chapter`");
-                    if($count > count($row1)){
-                        echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
-                        $addArr = [];
-                        $addArr['url'] = $url;
-                        $addArr['list_id'] = $row['id'];
-                        $urlInfo['www.manga.ae'][] = $addArr;
-                    }
+                    // $row1 = $dbo->loadAssocList("SELECT chapter FROM `comics_chapters` WHERE `list_id`='14' GROUP BY `chapter`");
+                    // if($count > count($row1)){
+                    //     echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
+                    //     $addArr = [];
+                    //     $addArr['url'] = $url;
+                    //     $addArr['list_id'] = $row['id'];
+                    //     $urlInfo['www.manga.ae'][] = $addArr;
+                    // }
                 }
-                */
+                
                 
 
             }else{
+                $list = pq($detail)->find('.manga-details-extended ul li');
+                foreach ($list as $val)
+                {
+                    $tmp = pq($val)->find('a:eq(0)')->text();
+                    if(!empty($tmp)){
+                        $tag .= ','.$tmp;
+                    }
+                    
+                }
+                $tags = trim($tag,',');                                                  #标签
+
+                $introduce = pq($detail)->find('.manga-details-extended h4:eq(2)')->text();
+                $introduce = mb_substr($introduce,0,1000);                                              #描述
+                $introduce = str_replace("'","\'",$introduce);
+                $author = pq($detail)->find('.manga-details-author h4:eq(0) a')->text();                #作者
+                 //书籍是否连载
+                $status = pq($detail)->find('div.manga-details-extended h4:eq(1)')->text();
+                if(preg_match('/مكتملة/',$status)){
+                    $status =0;
+                }else{
+                    $status = 1;
+                }
+
+                $number = (int) pq($article)->find('div.details:eq(0)')->text();
+                $year = pq($article)->find('div.year')->text();
+                $count = pq($article)->find('div.details:eq(1) > a')->text();
+                $count = empty($count) ? 0 : $count;
+                $pic = pq($article)->find('img:eq(0)')->attr('src');
+                $year = empty($year) ? 0 : $year;
+                $pic = empty($pic) ? '' : $pic;
                 $pic = imgIcon($pic,$name);
                 $temp = [];
                 $temp[] = time();
