@@ -36,7 +36,8 @@ if (isset($argv[1])) {
 //全站业务
 $urlInfo['www.manga.ae'] = [];
 $urlTemp = 'https://www.manga.ae/manga/page:';
-for ($i=1; $i <= 5; $i++) { 
+for ($i=1; $i <= 65; $i++) { 
+echo $i.'--------------------'.PHP_EOL;
     $urlForTemp = $urlTemp.$i;
     $html = BypassCloudFlare($urlForTemp);
     phpQuery::newDocumentHTML($html);
@@ -57,6 +58,7 @@ for ($i=1; $i <= 5; $i++) {
            
         if(!empty($name) && !empty($url))
         {
+            $name = trim($name,' ');
             $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count`,`update_time` FROM `comics_list` WHERE `name` LIKE '{$name}'");
             //判断是否有该书数据
             if($row)
