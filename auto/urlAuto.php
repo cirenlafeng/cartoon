@@ -58,8 +58,12 @@ echo $i.'--------------------'.PHP_EOL;
            
         if(!empty($name) && !empty($url))
         {
-            $name = trim($name,' ');
+            
             $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count`,`update_time` FROM `comics_list` WHERE `name` LIKE '{$name}'");
+            if(!$row){
+                $name = trim($name,' ');
+                $row = $dbo->loadAssoc("SELECT `id`,`name`,`chapters_count`,`update_time` FROM `comics_list` WHERE `name` LIKE '{$name}'");
+            }
             //判断是否有该书数据
             if($row)
             {
