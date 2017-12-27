@@ -98,17 +98,6 @@ echo $i.'--------------------'.PHP_EOL;
                         $addArr['list_id'] = $row['id'];
                         $urlInfo['www.manga.ae'][] = $addArr;
                     }
-                }else{
-                    continue;
-                    //本书章节没拿完则继续
-                    // $row1 = $dbo->loadAssocList("SELECT chapter FROM `comics_chapters` WHERE `list_id`='14' GROUP BY `chapter`");
-                    // if($count > count($row1)){
-                    //     echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
-                    //     $addArr = [];
-                    //     $addArr['url'] = $url;
-                    //     $addArr['list_id'] = $row['id'];
-                    //     $urlInfo['www.manga.ae'][] = $addArr;
-                    // }
                 }
                 
                 

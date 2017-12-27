@@ -212,7 +212,7 @@ class www_manga_ae
 			if(!$imginfo[1]) $imginfo[1]=1000;
 		    $data['width'] = (int) $imginfo[0];
 			$data['height'] = (int) $imginfo[1];
-			if($temp['content'] != 1) $data['status'] = 0;
+			if(!$imginfo[0]) $data['status'] = 0;
 		    unset($data['html']);
 			return $data;
 	    }else{
