@@ -183,21 +183,21 @@ class www_manga_ae
 		$t = time(); 
 		$html = $data['html'];
 		//图片高度超过1000的不裁剪原图生成
-		// $imgs = getimagesizefromstring($html);
-		// if($imgs[1] > 10000){
-		// 	$w = (int) $imgs[0];
-		// 	$h = (int) $imgs[1];
-		// }else{
-		// 	$w=610;
-		// 	$h=1000;
-		// }
+		$imgs = getimagesizefromstring($html);
+		if($imgs[1] > 10000){
+			$w = (int) $imgs[0];
+			$h = (int) $imgs[1];
+		}else{
+			$w=610;
+			$h=1000;
+		}
 		$postData = [
-    'appName'=>'sada',
-    'type'=>'file',
-    'w'=>610,
-    'h'=>1000,
-    'fileContent'=>base64_encode($html),
-    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+		    'appName'=>'sada',
+		    'type'=>'comics_manga_img',
+		    'w'=>$w,
+		    'h'=>$h,
+		    'srcUrl'=>$data['thumbnail'],
+		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	
 	    //下载内容图片
