@@ -202,6 +202,7 @@ class www_manga_ae
     	
 	    //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
+        sleep(1);
 	    if (!empty($temp['content'])) {
 	        $data['pic'] = $temp['content'];
 		    $data['time'] = time();
