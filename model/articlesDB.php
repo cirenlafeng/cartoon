@@ -139,7 +139,12 @@ function saveBody($sqlData='', $statuss = 2)
         @$statisticsInfo['saveBody']['#Error']['noTitle'][] = $urlID.' -> '.$url;
         return false;
     }
-    $sql = "UPDATE `comics_chapters` SET `status` = 2, `update_time` = '{$time}', `pic` = '{$pic}',`width` = '{$width}',`height` = '{$height}' WHERE `id` = '{$id}'";
+    if($status == 0){
+        $sql = "UPDATE `comics_chapters` SET `status` = 0, `update_time` = '{$time}', `pic` = '',`width` = '{$width}',`height` = '{$height}' WHERE `id` = '{$id}'";
+    }else{
+        $sql = "UPDATE `comics_chapters` SET `status` = 2, `update_time` = '{$time}', `pic` = '{$pic}',`width` = '{$width}',`height` = '{$height}' WHERE `id` = '{$id}'";
+    }
+    
    
     
     // print_format($sql,'sql');return;
