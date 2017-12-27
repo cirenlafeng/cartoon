@@ -82,8 +82,8 @@ echo $i.'--------------------'.PHP_EOL;
                         $tmp[] = time();
                         $num = count($tmp)-1;
                         foreach ($tmp as $t) {
-                            $i = $num-1;
-                            $day = $tmp[$num] - $tmp[$i];
+                            $jk = $num-1;
+                            $day = $tmp[$num] - $tmp[$jk];
                             $update_day = ceil($day/86400);
                         }
                         
