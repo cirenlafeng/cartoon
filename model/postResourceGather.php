@@ -124,7 +124,7 @@ function srcPostAPI($postData = array())
         $result = json_encode(['code'=>-1,'msg'=>'HTTP_CODE = '.$httpCode]);
         echo 'CDN_error: --> '.$result.PHP_EOL;
     }else{
-        $result = '{'.getPregData('/{(.*?)}/i',$result).'}';
+        //$result = '{'.getPregData('/{(.*?)}/i',$result).'}';
         echo 'srcPostAPI  ==>>>'.$result.PHP_EOL;
     }
     return $result;

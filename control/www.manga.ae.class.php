@@ -183,14 +183,41 @@ class www_manga_ae
 		$t = time(); 
 		$html = $data['html'];
 		//图片高度超过1000的不裁剪原图生成
-		// $imgs = getimagesizefromstring($html);
-		// if($imgs[1] > 10000){
-		// 	$w = (int) $imgs[0];
-		// 	$h = (int) $imgs[1];
-		// }else{
-		// 	$w=610;
-		// 	$h=1000;
-		// }
+		$imgs = getimagesizefromstring($html);
+		// var_dump($imgs);
+		
+		$wid = (int) $imgs[0];
+		$hei = (int) $imgs[1];
+		$maxwidth = 610;
+		$maxheight = 1000;
+		if($hei < 10000){
+			if($wid < $maxwidth && $hei < $maxheight){
+				$w = $wid;
+		    	$h = $hei;
+			}else{
+				if($wid>$hei){
+			        $w= $maxwidth;
+			        $h= $maxwidth/($wid/$hei);
+			    }else {
+			        $w = $maxheight * ($wid / $hei);
+			        $h = $maxheight;
+			    }
+			    $w = ceil($w);
+			    $h = ceil($h);
+			}
+			
+		}
+
+		$postData = [
+		    'isFile'=>1,
+		    'width'=>$w,
+		    'height'=>$h,
+		    'file'=>$html,
+		    'secret'=>'70782933784837976553',
+		    'imageUrl' => 'http://comics.mobibookapp.com/admin/comicsTags',
+		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+    	];
+		/* 新闻cdn停止
 		$postData = [
 		    'appName'=>'sada',
 		    'type'=>'comics_manga_img',
@@ -199,15 +226,15 @@ class www_manga_ae
 		    'srcUrl'=>$data['thumbnail'],
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
-    	
+    	*/
 	    //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
-        sleep(1);
-	    if (!empty($temp['content'])) {
-	        $data['pic'] = $temp['content'];
+        //sleep(1);
+	    if (!empty($temp['data']->url)) {
+	        $data['pic'] = $temp['data']->url;
 		    $data['time'] = time();
 		    //获取图片宽高  610  1000
-			$imginfo = getimagesize($temp['content']);
+			$imginfo = getimagesize($temp['data']->url);
 			if(!$imginfo[0]){
 				$data['status'] = 0;
 			}else{
