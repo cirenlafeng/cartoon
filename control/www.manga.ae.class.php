@@ -195,7 +195,7 @@ class www_manga_ae
 				$w = $wid;
 		    	$h = $hei;
 			}else{
-				if($wid>$hei){
+				if($wid<$hei){
 			        $w= $maxwidth;
 			        $h= $maxwidth/($wid/$hei);
 			    }else {
