@@ -183,9 +183,8 @@ class www_manga_ae
 		$t = time(); 
 		$html = $data['html'];
 		//图片高度超过1000的不裁剪原图生成
+		/*
 		$imgs = getimagesizefromstring($html);
-		// var_dump($imgs);
-		
 		$wid = (int) $imgs[0];
 		$hei = (int) $imgs[1];
 		$maxwidth = 610;
@@ -217,7 +216,8 @@ class www_manga_ae
 		    'imageUrl' => 'http://comics.mobibookapp.com/admin/comicsTags',
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
-		/* 新闻cdn停止
+    	*/
+		//新闻cdn停止
 		$postData = [
 		    'appName'=>'sada',
 		    'type'=>'comics_manga_img',
@@ -226,15 +226,15 @@ class www_manga_ae
 		    'srcUrl'=>$data['thumbnail'],
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
-    	*/
+    	
 	    //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
-        //sleep(1);
-	    if (!empty($temp['data']->url)) {
-	        $data['pic'] = $temp['data']->url;
+        sleep(1);
+	    if (!empty($temp['content'])) {
+	        $data['pic'] = $temp['content'];
 		    $data['time'] = time();
 		    //获取图片宽高  610  1000
-			$imginfo = getimagesize($temp['data']->url);
+			$imginfo = getimagesize($temp['content']);
 			if(!$imginfo[0]){
 				$data['status'] = 0;
 			}else{
