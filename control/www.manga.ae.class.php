@@ -219,7 +219,7 @@ class www_manga_ae
     	*/
 		//新闻cdn停止
 		$postData = [
-		    'appName'=>'sada',
+		    'appName'=>'comics',
 		    'type'=>'comics_manga_img',
 		    // 'w'=>$w,
 		    // 'h'=>$h,
