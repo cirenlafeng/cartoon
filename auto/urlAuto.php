@@ -157,13 +157,13 @@ echo $i.'--------------------'.PHP_EOL;
 
 function imgIcon($pic,$name){
     $t = time(); 
-    $html = BypassCloudFlare($pic);
+    //$html = BypassCloudFlare($pic);
     $postData = [
-        'appName'=>'sada',
-        'type'=>'file',
-        'w'=>610,
-        'h'=>1000,
-        'fileContent'=>base64_encode($html),
+        'appName'=>'comics',
+        'type'=>'comics_manga_img',
+        // 'w'=>$w,
+        // 'h'=>$h,
+        'srcUrl'=>$pic,
         'fileName'=>$t.md5($name).substr(strrchr($pic, '/'),1),
     ];
     
