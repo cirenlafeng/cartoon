@@ -182,31 +182,17 @@ class www_manga_ae
 		}
 		$t = time(); 
 		$html = $data['html'];
+		
 		//图片高度超过1000的不裁剪原图生成
-		/*
 		$imgs = getimagesizefromstring($html);
-		$wid = (int) $imgs[0];
-		$hei = (int) $imgs[1];
-		$maxwidth = 610;
-		$maxheight = 1000;
-		if($hei < 10000){
-			if($wid < $maxwidth && $hei < $maxheight){
-				$w = $wid;
-		    	$h = $hei;
-			}else{
-				if($wid<$hei){
-			        $w= $maxwidth;
-			        $h= $maxwidth/($wid/$hei);
-			    }else {
-			        $w = $maxheight * ($wid / $hei);
-			        $h = $maxheight;
-			    }
-			    $w = ceil($w);
-			    $h = ceil($h);
-			}
-			
+		if($imgs[1] > 10000){
+			$w = (int) $imgs[0];
+			$h = (int) $imgs[1];
+		}else{
+			$w=610;
+			$h=1000;
 		}
-
+		/*
 		$postData = [
 		    'isFile'=>1,
 		    'width'=>$w,
@@ -221,8 +207,8 @@ class www_manga_ae
 		$postData = [
 		    'appName'=>'comics',
 		    'type'=>'comics_manga_img',
-		    // 'w'=>$w,
-		    // 'h'=>$h,
+		    'w'=>$w,
+		    'h'=>$h,
 		    'srcUrl'=>$data['thumbnail'],
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
