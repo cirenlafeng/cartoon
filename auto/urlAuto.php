@@ -36,7 +36,7 @@ if (isset($argv[1])) {
 //全站业务
 $urlInfo['www.manga.ae'] = [];
 $urlTemp = 'https://www.manga.ae/manga/page:';
-for ($i=1; $i <= 65; $i++) { 
+for ($i=1; $i <= 66; $i++) { 
 echo $i.'--------------------'.PHP_EOL;
     $urlForTemp = $urlTemp.$i;
     $html = BypassCloudFlare($urlForTemp);
