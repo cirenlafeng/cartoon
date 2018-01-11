@@ -92,8 +92,7 @@ echo $i.'--------------------'.PHP_EOL;
                         
                     }
                     $update_time = serialize($tmp);
-                    $re = $dbo->exec("UPDATE `comics_list` SET `e_name`='{$e_name}',`chapters_count` = '{$count}',`update_time` = '{$update_time}',`update_day` = '{$update_day}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
-                    //$re = $dbo->exec("UPDATE `comics_list` SET `e_name`='{$e_name}',`chapters_count` = '{$count}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                    $re = $dbo->exec("UPDATE `comics_list` SET `chapters_count` = '{$count}',`update_time` = '{$update_time}',`update_day` = '{$update_day}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
                     if($re)
                     {
                         echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
@@ -141,7 +140,7 @@ echo $i.'--------------------'.PHP_EOL;
                 $temp = [];
                 $temp[] = time();
                 $update_time = serialize($temp);
-                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`,`number`,`status`,`update_time`) VALUES('{$tags}','{$name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}','{$number}','{$status}','{$update_time}')");
+                $rel = $dbo->exec("INSERT INTO `comics_list` (`tags`,`name`,`e_name`,`author`,`pic`,`chapters_count`,`year`,`url`,`introduce`,`number`,`status`,`update_time`) VALUES('{$tags}','{$name}','{$e_name}','{$author}','{$pic}','{$count}','{$year}','{$url}','{$introduce}','{$number}','{$status}','{$update_time}')");
                 $list_id = $dbo->loadAssoc("SELECT `id`,`name` FROM `comics_list` WHERE `name` = '{$name}' AND `url`='{$url}' ");
                 if($rel && !empty($list_id['id']))
                 {
