@@ -54,6 +54,9 @@ echo $i.'--------------------'.PHP_EOL;
         
         $name = pq($article)->find('a.manga:eq(1)')->text();
         $name = str_replace("'","",$name);
+
+        $e_name = pq($article)->find('a.manga:eq(0)')->text();
+        $e_name = str_replace("'","",$e_name);
         $url = pq($article)->find('a.manga:eq(1)')->attr('href');
            
         if(!empty($name) && !empty($url))
@@ -89,7 +92,8 @@ echo $i.'--------------------'.PHP_EOL;
                         
                     }
                     $update_time = serialize($tmp);
-                    $re = $dbo->exec("UPDATE `comics_list` SET `chapters_count` = '{$count}',`update_time` = '{$update_time}',`update_day` = '{$update_day}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                    $re = $dbo->exec("UPDATE `comics_list` SET `e_name`='{$e_name}',`chapters_count` = '{$count}',`update_time` = '{$update_time}',`update_day` = '{$update_day}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
+                    //$re = $dbo->exec("UPDATE `comics_list` SET `e_name`='{$e_name}',`chapters_count` = '{$count}' WHERE `name` = '{$name}' AND `url`='{$url}' ");
                     if($re)
                     {
                         echo "##更新书籍：ID->".$row['id']." 名称：".$row['name'].PHP_EOL;
