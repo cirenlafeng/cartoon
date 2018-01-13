@@ -176,7 +176,7 @@ print_format($statisticsInfo,'$statisticsInfo');
                 $url2 .= 'jschl_vc='.$jschl_vc[1];
                 $url2 .= '&pass='.$pass[1];
                 $url2 .= '&jschl_answer='.$jschl_answer;
-                sleep(4);
+                sleep(1);
                 $data = OpenURLCloudFlare($url2, $url);
             }
         } else {

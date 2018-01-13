@@ -137,6 +137,8 @@ function www_manga_ae_Funtion($result, $args)
     foreach ($args as $key => $value) {
         $file = $value['pic'];
         $file = str_replace('http://src.mysada.com/sada/file/jpg/','',$file);
+        $file = str_replace('http://src.mysada.com/sada/file/gif/','',$file);
+        $file = str_replace('http://src.mysada.com/sada/file/png/','',$file);
 
         $html = imageCropWhiteLaceByFile($value['pic'],'new.jpg');
         /*
