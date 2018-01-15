@@ -204,7 +204,7 @@ class www_manga_ae
     	];
     	*/
 		//阅读cdn
-		if($imgs[1] > 2000){
+		if($imgs[1] > 3000){
 			$postData = [
 			    'appName'=>'comics',
 			    'type'=>'comics_manga_img',
