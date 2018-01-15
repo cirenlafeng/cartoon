@@ -203,20 +203,34 @@ class www_manga_ae
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	*/
-        $picupdate = $this->imageCropWhiteLaceByFile($html,'temp.jpg');
-
 		//阅读cdn
-		$postData = [
-		    'appName'=>'comics',
-		    'type'=>'file',
-		    'w'=>$w,
-		    'h'=>$h,
-		    'fileContent'=>base64_encode($picupdate),
-		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
-    	];
+		if($imgs[1] > 2000){
+			$postData = [
+			    'appName'=>'comics',
+			    'type'=>'comics_manga_img',
+			    'w'=>$w,
+			    'h'=>$h,
+			    'srcUrl'=>$data['thumbnail'],
+			    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+	    	];
+		}else{
+			$picupdate = $this->imageCropWhiteLaceByFile($html,'temp.jpg');
+			$postData = [
+			    'appName'=>'comics',
+			    'type'=>'file',
+			    'w'=>$w,
+			    'h'=>$h,
+			    'fileContent'=>base64_encode($picupdate),
+			    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
+	    	];
+		}
+		
+
+    	
     	
 	    //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
+        var_dump($temp);die;
         sleep(1);
 	    if (!empty($temp['content'])) {
 	        $data['pic'] = $temp['content'];
