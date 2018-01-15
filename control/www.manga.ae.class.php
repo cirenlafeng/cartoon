@@ -203,13 +203,15 @@ class www_manga_ae
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	*/
-		//新闻cdn停止
+        $picupdate = $this->imageCropWhiteLaceByFile($html,'temp.jpg');
+
+		//阅读cdn
 		$postData = [
 		    'appName'=>'comics',
-		    'type'=>'comics_manga_img',
+		    'type'=>'file',
 		    'w'=>$w,
 		    'h'=>$h,
-		    'srcUrl'=>$data['thumbnail'],
+		    'fileContent'=>base64_encode($picupdate),
 		    'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
     	];
     	
@@ -239,6 +241,114 @@ class www_manga_ae
 	    }
 	    
 	}
+
+
+	/**
+	*	图片白边裁剪
+	*/
+	public function imageCropWhiteLaceByFile($imagePath, $newPath = false, $lace = 5)
+		{
+		    $imageData = $imagePath;
+		    $imageInfo = imagecreatefromstring($imageData);
+
+		    //图片宽高
+		    $imageWidth = imagesx($imageInfo);
+		    $imageHeight = imagesy($imageInfo);
+
+		    //设定初始值
+		    $validX = $validY = 10000000;
+		    $validWidth = $validHeight = 0;
+		    $isColoursImage = false;
+		    $isUpdate = true;
+		    $xxx = 0;
+
+		    for ($x=0; $x < $imageWidth; $x++)
+		    { 
+		        for ($y=0; $y < $imageHeight; $y++)
+		        { 
+		            //提取像素色值并计算R,G,B的值
+		            $color_RGB = imagecolorat($imageInfo,$x,$y);
+		            $R = ($color_RGB >> 16) & 0xFF;
+		            $G = ($color_RGB >> 8) & 0xFF;
+		            $B = $color_RGB & 0xFF;
+
+		            //判断是否是彩色图
+		            if (abs($R - $G) > 50 || abs($B - $G)  > 50 || abs($B - $R) > 50) {
+		                $isColoursImage = true;
+		            }
+		            if ($isColoursImage && $xxx < 10) {
+		                //echo abs($R - $G)." , ".abs($B - $G)." , ".abs($B - $R)."\n";
+		                $xxx++;
+		            }
+
+		            // if ($R == 0 && $G == 0 && $B == 0)//全黑的容错率不行
+		            if ($R < 20 && $G < 20 && $B < 20)//这个条件容错率高一点
+		            {
+		                if ($validX > $x) {
+		                    $validX = $x;
+		                }
+		                if ($validY > $y) {
+		                    $validY = $y;
+		                }
+		                if ($validWidth < $x) {
+		                    $validWidth = $x;
+		                }
+		                if ($validHeight < $y) {
+		                    $validHeight = $y;
+		                }
+		            }
+		        }
+		    }
+
+		    //排除裁切过大的彩图
+		    if ($isColoursImage && ($validX > 100 || $validY > 100 || ($imageWidth - $validWidth) > 100 || ($imageHeight - $validHeight) > 100 )) {
+		        $isUpdate = false;
+		        echo "isColoursImage = $isColoursImage, x = $validX, y = $validY, width = $imageWidth - $validWidth, height = $imageHeight - $validHeight \n";
+		    }else{
+		        if ($validX < 5 && $validY < 5 && ($imageWidth - $validWidth) < 5 && ($imageHeight - $validHeight) < 5) {
+		            $isUpdate = false;
+		        }
+		    }
+
+		    if (!$isUpdate)
+		    {
+		        $newImage = $imageInfo;
+		    }
+		    else
+		    {
+		        $newWidth = $validWidth - $validX;
+		        $newHeight = $validHeight - $validY;
+
+		        // echo "x = $validX, y = $validY, newWidth = $newWidth, newHeight = $newHeight \n";
+
+		        //创建新画布
+		        $newImage = imagecreatetruecolor($newWidth + $lace*2, $newHeight + $lace*2);
+
+		        //原始画布填充为白色背景
+		        $color = imagecolorAllocate($newImage,255,255,255);
+		        imagefill($newImage,0,0,$color);
+
+		        //裁剪处理
+		        imagecopyresampled($newImage, $imageInfo, $lace, $lace, $validX, $validY, $newWidth, $newHeight, $newWidth, $newHeight);
+		    }
+		    
+		    //输出图片
+		    if ($newPath)
+		    {
+		        imagejpeg($newImage, $newPath);
+		        return file_get_contents('temp.jpg');
+		        if ($isUpdate) {
+		            echo "#Suc : newPath = $newPath \n";
+		        }else{
+		            echo "#Suc <image not update>:  .... newPath = $newPath \n";
+		        }
+		    }else{
+		        if (!$isUpdate) {
+		            echo "#Notice : <image not update>\n";
+		        }
+		        return ['update'=>$isUpdate,'imageData'=>$newImage];
+		    }
+		}
 }
 
 
