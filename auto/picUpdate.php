@@ -134,12 +134,21 @@ function work()
 
 function www_manga_ae_Funtion($result, $args)
 {
+    //https://cdn.mobibookapp.com/comics/file/jpg/
     foreach ($args as $key => $value) {
         $file = $value['pic'];
-        $file = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/jpeg\//ism','',$file);
-        $file = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/jpg\//ism','',$file);
-        $file = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/gif\//ism','',$file);
-        $file = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/png\//ism','',$file);
+        if(preg_match('/cdn\.mobibookapp\.com/ism',$file)){
+            $files = preg_replace('/http:\/\/cdn\.mobibookapp\.com\/comics\/file\/jpeg\//ism','',$file);
+            $files = preg_replace('/http:\/\/cdn\.mobibookapp\.com\/comics\/file\/jpg\//ism','',$file);
+            $files = preg_replace('/http:\/\/cdn\.mobibookapp\.com\/comics\/file\/gif\//ism','',$file);
+            $files = preg_replace('/http:\/\/cdn\.mobibookapp\.com\/comics\/file\/png\//ism','',$file);
+        }else{
+            $files = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/jpeg\//ism','',$file);
+            $files = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/jpg\//ism','',$file);
+            $files = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/gif\//ism','',$file);
+            $files = preg_replace('/http:\/\/src\.mysada\.com\/sada\/file\/png\//ism','',$file);
+        }
+        
 
         $html = imageCropWhiteLaceByFile($value['pic'],'new.jpg');
         /*
@@ -178,15 +187,27 @@ function www_manga_ae_Funtion($result, $args)
         //     'fileName'=>$t.md5($data['list_id'].'_'.$data['chapter']).$data['list_id'].'_'.$data['page'].'_'.substr(strrchr($data['thumbnail'], '/'),1),
         // ];
         */
-        //新闻
-        $postData = [
-            'appName'=>'sada',
-            'type'=>'file',
-            // 'w'=>610,
-            // 'h'=>1000,
-            'fileContent'=>base64_encode($html),
-            'fileName'=>$file,
-        ];
+        if(preg_match('/cdn\.mobibookapp\.com/ism',$file)){
+            $postData = [
+                'appName'=>'comics',
+                'type'=>'file',
+                // 'w'=>$w,
+                // 'h'=>$h,
+                'fileContent'=>base64_encode($html),
+                'fileName'=>$files,
+            ];
+        }else{
+            //新闻
+            $postData = [
+                'appName'=>'sada',
+                'type'=>'file',
+                // 'w'=>610,
+                // 'h'=>1000,
+                'fileContent'=>base64_encode($html),
+                'fileName'=>$files,
+            ];
+        }
+        
         //下载内容图片
         $temp = (array)json_decode(srcPostAPI($postData));
         //var_dump($temp);
