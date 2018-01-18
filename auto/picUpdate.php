@@ -151,6 +151,11 @@ function www_manga_ae_Funtion($result, $args)
         
 
         $html = imageCropWhiteLaceByFile($value['pic'],'new.jpg');
+
+        //如果图片流文件失本次则不覆盖更新
+        $imgs = getimagesizefromstring($html);
+        if(!$imgs[0]) continue;
+
         /*
             //下载图片到本地
             //$p = str_pad($a,5,'0',STR_PAD_LEFT).($k+1+$i);
