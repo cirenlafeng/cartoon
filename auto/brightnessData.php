@@ -44,7 +44,7 @@ if(isset($flag[2]) && (!is_string($flag[2]) || !preg_match('/,/ism',$flag[2]))){
 
 //全局加载
 include_once(dirname(__FILE__).'/../conf/include.php');
-include_once(dirname(__FILE__).'./grafika/src/autoloader.php');
+include_once(dirname(__FILE__).'/grafika/src/autoloader.php');
 
 
 
