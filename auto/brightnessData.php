@@ -251,7 +251,7 @@ function imageCropWhiteLaceByFile($pic)
 
 	$editor->open( $image,$pic);
 	$filter = Grafika::createFilter('Brightness', 10);
-	$filter = Grafika::createFilter('Contrast', 20);
+	$filter = Grafika::createFilter('Contrast', 15);
 	$editor->apply( $image, $filter );
 	$info = $editor->save($image,'brightness.jpg');
 	if($info){
